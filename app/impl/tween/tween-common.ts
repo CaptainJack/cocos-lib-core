@@ -1,0 +1,16 @@
+export namespace tween_common {
+	export type Easing = (k: number) => number
+	
+	export interface Cloneable {
+		clone(): any
+	}
+	
+	export function cloneArray<T extends Cloneable>(array: Array<T>): Array<T> {
+		const result = new Array<T>(array.length)
+		for (let i = 0; i < array.length; i++) {
+			result[i] = array[i].clone()
+		}
+		return result
+	}
+	
+}
