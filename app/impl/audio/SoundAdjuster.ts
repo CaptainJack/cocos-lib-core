@@ -24,16 +24,17 @@ export class FadeSoundAdjuster implements SoundAdjuster {
 	}
 	
 	public handlePause(): boolean {
-		this.sound.smoothVolume(this.duration, 0).onComplete(() => this.sound.doPause())
+		this.sound.smoothVolume(this.duration, 0).then(() => this.sound.doPause())
 		return true
 	}
 	
 	public handleStop(): boolean {
-		this.sound.smoothVolume(this.duration, 0).onComplete(() => this.sound.doStop())
+		this.sound.smoothVolume(this.duration, 0).then(() => this.sound.doStop())
 		return true
 	}
 	
 	public handleEnd(): void {
+		
 		this.sound = null
 		this.duration = null
 	}

@@ -22,13 +22,13 @@ export class Wrapper extends NormalizedComponent {
 	
 	public set targets(value: Array<Node>) {
 		for (const target of this._targets) {
-			if (target) target.off(NodeEventType.SIZE_CHANGED, this.wrap, this)
+			if (target) target.off(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
 		}
 		
 		this._targets = value
 		
 		for (const target of this._targets) {
-			if (target) target.on(NodeEventType.SIZE_CHANGED, this.wrap, this)
+			if (target) target.on(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
 		}
 	}
 	
@@ -39,7 +39,7 @@ export class Wrapper extends NormalizedComponent {
 	
 	public set vertical(value: boolean) {
 		this._vertical = value
-		this.wrap()
+		this.updateWrap()
 	}
 	
 	@_decorator.property
@@ -49,21 +49,21 @@ export class Wrapper extends NormalizedComponent {
 	
 	public set horizontal(value: boolean) {
 		this._horizontal = value
-		this.wrap()
+		this.updateWrap()
 	}
 	
 	protected onLoad() {
 		super.onLoad()
 		
-		this.wrap()
+		this.updateWrap()
 		
 		for (const target of this._targets) {
-			target.off(NodeEventType.SIZE_CHANGED, this.wrap, this)
-			target.on(NodeEventType.SIZE_CHANGED, this.wrap, this)
+			target.off(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+			target.on(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
 		}
 	}
 	
-	protected wrap() {
+	public updateWrap() {
 		const size = new Vec2(0, 0)
 		
 		for (const target of this._targets) {
