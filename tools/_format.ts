@@ -1,6 +1,7 @@
 import {Long} from '../capjack/tool/lang/Long'
 import {isString} from '../capjack/tool/lang/_utils'
 import {_string} from '../capjack/tool/lang/_string'
+import {Label} from 'cc'
 
 export enum TimePrecision {
 	HOUR,
@@ -22,14 +23,23 @@ export namespace _format {
 		
 		let r = ''
 		
-		if (precision == TimePrecision.HOUR) {
+		const hv = precision == TimePrecision.HOUR || h > 0
+		if (hv) {
 			r += _string.padStart(h.toString(), 2, '0') + ':'
 		}
-		if (precision == TimePrecision.HOUR || precision == TimePrecision.MINUTE) {
+		if (hv || precision == TimePrecision.MINUTE || m > 0) {
 			r += _string.padStart(m.toString(), 2, '0') + ':'
 		}
 		
 		return r + _string.padStart(s.toString(), 2, '0')
+	}
+	
+	export function putDollarValueToLabel(label: Label, value: string | number | Long) {
+		// @ts-ignore
+		if (!label.stringTemplate) label.stringTemplate = label.string
+		
+		// @ts-ignore
+		label.string = label.stringTemplate.replace('$', value)
 	}
 	
 	export function formatIntegerNumber(value: number | Long | string, thousandthSeparator: string): string {

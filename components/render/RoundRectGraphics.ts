@@ -21,8 +21,38 @@ export class RoundRectGraphics extends Graphics implements RoundRectComponent {
 	private _rightBottom: boolean = true
 	
 	@_decorator.property
+	private _useFill: boolean = true
+	
+	@_decorator.property
+	private _useStroke: boolean = false
+	
+	@_decorator.property
 	public get radius(): number {
 		return this._radius
+	}
+	
+	@_decorator.property
+	public get useFill(): boolean {
+		return this._useFill
+	}
+	
+	public set useFill(value: boolean) {
+		if (this._useFill != value ) {
+			this._useFill = value
+			this.draw()
+		}
+	}
+	
+	@_decorator.property
+	public get useStroke(): boolean {
+		return this._useStroke
+	}
+	
+	public set useStroke(value: boolean) {
+		if (this._useStroke != value) {
+			this._useStroke = value
+			this.draw()
+		}
 	}
 	
 	public set radius(value: number) {
@@ -90,5 +120,12 @@ export class RoundRectGraphics extends Graphics implements RoundRectComponent {
 	
 	private draw() {
 		RoundRectComponent.draw(this, this)
+		
+		if (this._useFill) {
+			this.fill()
+		}
+		if (this._useStroke) {
+			this.stroke()
+		}
 	}
 }

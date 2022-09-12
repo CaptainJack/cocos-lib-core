@@ -90,6 +90,8 @@ export class RoundRectMask extends Mask implements RoundRectComponent {
 	}
 	
 	private draw() {
-		RoundRectComponent.draw(this.subComp as Graphics, this)
+		const g = this.subComp as Graphics
+		RoundRectComponent.draw(g, this)
+		g.fill()
 	}
 }

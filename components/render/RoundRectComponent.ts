@@ -33,7 +33,5 @@ export namespace RoundRectComponent {
 		if (!c.rightBottom) {
 			g.rect(t.anchorX * t.width, -t.anchorY * t.height, -r, r)
 		}
-		
-		g.fill()
 	}
 }
