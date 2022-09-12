@@ -61,6 +61,10 @@ export namespace _array {
 		return collection[collection.length - 1]
 	}
 	
+	export function getOrLast<T>(collection: Array<T>, i: number): T {
+		return collection.length > i ? collection[i] : last(collection)
+	}
+	
 	export function flatMap<T, R>(collection: Array<T>, transform: (element: T) => Array<R>): Array<R> {
 		const result = []
 		for (let i = 0, l = collection.length; i < l; i++) {

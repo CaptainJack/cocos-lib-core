@@ -3,6 +3,8 @@ import {LocalStorage} from '../../app/LocalStorage'
 import {CpdAccount} from '../CpdAccount'
 
 export abstract class AbstractAdapter implements CpdAdapter {
+	public readonly abstract purchaseAvailable: boolean
+	
 	protected readonly _storage: LocalStorage
 	
 	constructor(storage: LocalStorage) {
@@ -10,6 +12,10 @@ export abstract class AbstractAdapter implements CpdAdapter {
 	}
 	
 	public abstract authorize(): Promise<CpdAccount | null>
+	
+	public abstract loadShop(ids: string[], receiver: (currency: string, products: Array<{id: string; price: number}>) => void): void
+	
+	public abstract purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string) => void, onFail: (reason: string) => void): void
 	
 	protected abstract getDeviceId(): Promise<string>
 	
