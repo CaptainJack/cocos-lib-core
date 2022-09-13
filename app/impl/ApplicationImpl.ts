@@ -11,6 +11,8 @@ import {LocalizationConfig} from './LocalizationConfig'
 import {Audio} from '../Audio'
 import {WorkerEventChannel} from '../../events/WorkerEventChannel'
 import {AudioImpl} from './audio/AudioImpl'
+import {Bundler} from '../Bundler'
+import {BundlerImpl} from './BundlerImpl'
 
 export class ApplicationImpl implements Application {
 	public readonly devMode: boolean
@@ -20,6 +22,7 @@ export class ApplicationImpl implements Application {
 	public readonly localization: Localization
 	public readonly events: WorkerEventChannel<any>
 	public readonly audio: Audio
+	public readonly bundler: Bundler
 	
 	constructor(name: string, config: any) {
 		this.devMode = !!config.devMode
@@ -30,8 +33,9 @@ export class ApplicationImpl implements Application {
 		this.localization = new Localization_RU(new LocalizationConfig('.', ','))
 		this.events = new WorkerEventChannel(this.assistant, e => this.handleError(e))
 		this.audio = new AudioImpl(scene.node, this.tweener)
+		this.bundler = new BundlerImpl({}, this.assistant, e => this.handleError(e))
 		
-		window.addEventListener('error', e => this.stop())
+		window.addEventListener('error', () => this.stop())
 		
 		const log = config.log as Record<string, string>
 		

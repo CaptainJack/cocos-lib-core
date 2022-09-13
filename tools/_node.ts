@@ -9,6 +9,8 @@ declare module 'cc' {
 		
 		setOpacity(percent: number)
 		
+		setScaleFully(percent: number)
+		
 		setWidth(value: number)
 		
 		getWidth(): number
@@ -66,6 +68,10 @@ Node.prototype.setOpacity = function (percent: number) {
 			throw new IllegalArgumentException('UIOpacity or Renderable2D component required')
 		}
 	}
+}
+
+Node.prototype.setScaleFully = function (value: number) {
+	this.setScale(value, value)
 }
 
 Node.prototype.setWidth = function (value: number) {

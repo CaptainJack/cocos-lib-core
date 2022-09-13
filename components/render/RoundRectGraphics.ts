@@ -118,7 +118,7 @@ export class RoundRectGraphics extends Graphics implements RoundRectComponent {
 		this.node.on(NodeEventType.SIZE_CHANGED, this.draw, this)
 	}
 	
-	private draw() {
+	public draw() {
 		RoundRectComponent.draw(this, this)
 		
 		if (this._useFill) {

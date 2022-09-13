@@ -4,6 +4,7 @@ import {LocalStorage} from './LocalStorage'
 import {Localization} from './Localization'
 import {EventChannel} from '../events/EventChannel'
 import {Audio} from './Audio'
+import {Bundler} from './Bundler'
 
 export interface Application {
 	readonly devMode: boolean
@@ -13,4 +14,5 @@ export interface Application {
 	readonly localization: Localization
 	readonly events: EventChannel<object>
 	readonly audio: Audio
+	readonly bundler: Bundler
 }
