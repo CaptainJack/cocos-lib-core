@@ -24,6 +24,8 @@ export class ApplicationImpl implements Application {
 	public readonly audio: Audio
 	public readonly bundler: Bundler
 	
+	private _stopped: boolean = false
+	
 	constructor(name: string, config: any) {
 		this.devMode = !!config.devMode
 		
@@ -52,10 +54,13 @@ export class ApplicationImpl implements Application {
 	}
 	
 	private stop() {
-		this.audio.stop()
-		this.events.clear()
-		this.tweener.stop()
-		this.assistant.stop()
+		if (!this._stopped) {
+			this._stopped = true
+			this.audio.stop()
+			this.events.clear()
+			this.tweener.stop()
+			this.assistant.stop()
+		}
 	}
 	
 	private handleError(error: Error) {

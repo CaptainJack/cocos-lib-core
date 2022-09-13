@@ -5,7 +5,7 @@ import {RealSound} from './RealSound'
 import {RealSoundOwner} from './RealSoundOwner'
 import {Tweener} from '../../Tweener'
 import {Audio, Sound, SoundSettings} from '../../Audio'
-import {check, isEmpty} from '../../../capjack/tool/lang/_utils'
+import {isEmpty} from '../../../capjack/tool/lang/_utils'
 import {_assets} from '../../../tools/_assets'
 import {ArrayQueue} from '../../../capjack/tool/utils/collections/ArrayQueue'
 import {Cancelable} from '../../../capjack/tool/utils/Cancelable'
@@ -77,7 +77,6 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		this._node = null
 		this._shotSource = null
 		
-		check(this._sounds.size == 0)
 		this._sounds = null
 	}
 	
@@ -89,6 +88,7 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	protected updateVolume() {
 		const volume = this.getVolume()
 		this._shotSource.volume = volume
+		
 		for (const sound of this._sounds) {
 			sound.updateVolume()
 		}
@@ -118,7 +118,12 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	}
 	
 	private releaseSource(source: AudioSource) {
-		this._nodes.add(source.node)
-		source.destroy()
+		if (this._nodes) {
+			this._nodes.add(source.node)
+			source.destroy()
+		}
+		else {
+			source.node.destroy()
+		}
 	}
 }

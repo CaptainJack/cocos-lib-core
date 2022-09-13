@@ -26,6 +26,8 @@ declare module 'cc' {
 		setScaleX(percent: number)
 		
 		setScaleY(percent: number)
+		
+		getChild(path: string): Node
 	}
 	
 	interface Component {
@@ -36,8 +38,32 @@ declare module 'cc' {
 }
 
 Node.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
-	const node = this.getChildByPath(path)
+	const node = this.getChild(path)
 	return node ? node.getComponent(type) : null
+}
+
+Node.prototype.getChild = function (path: string): Node {
+	let c = this.getChildByPath(path)
+	if (c) {
+		return c
+	}
+	
+	let i = path.indexOf('/')
+	if (i > 0) {
+		const n = this.getChild(path.substring(0, i))
+		if (n) {
+			return n.getChild(path.substring(i + 1))
+		}
+	}
+	else {
+		for (c of this.children) {
+			c = c.getChild(path)
+			if (c) {
+				return c
+			}
+		}
+	}
+	return null
 }
 
 Component.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
@@ -45,7 +71,7 @@ Component.prototype.getChildComponent = function <T extends Component>(path: str
 }
 
 Component.prototype.getChild = function(path: string): Node {
-	return this.node.getChildByPath(path)
+	return this.node.getChild(path)
 }
 
 Node.prototype.setOpacity = function (percent: number) {
