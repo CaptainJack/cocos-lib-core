@@ -49,7 +49,7 @@ export class EllipseGraphics extends Graphics {
 		const h = t.height / 2
 		
 		this.clear()
-		this.ellipse(-t.anchorX, -t.anchorY, w, h)
+		this.ellipse((0.5 - t.anchorX) * t.width,  (0.5 - t.anchorY) * t.height, w, h)
 		
 		if (this._useFill) {
 			this.fill()
