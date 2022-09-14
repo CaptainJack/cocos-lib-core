@@ -1,7 +1,9 @@
 import {Class} from '../capjack/tool/lang/_types'
-import {Component, Node, Renderable2D, UIOpacity, UITransform} from 'cc'
+import {Component, Node, Renderable2D, sys, UIOpacity, UITransform} from 'cc'
 import {require} from '../capjack/tool/lang/_utils'
 import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalArgumentException'
+
+export const SKELETON_EMPTY_ATTACHMENT = sys.isNative ? '' : null
 
 declare module 'cc' {
 	interface Node {
