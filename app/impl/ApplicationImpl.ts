@@ -15,7 +15,7 @@ import {Bundler} from '../Bundler'
 import {BundlerImpl} from './BundlerImpl'
 
 export class ApplicationImpl implements Application {
-	public readonly devMode: boolean
+	public readonly debug: boolean
 	public readonly assistant: StoppableTemporalAssistantProxy
 	public readonly tweener: tween.TweenerImpl
 	public readonly storage: SystemLocalStorage
@@ -27,7 +27,7 @@ export class ApplicationImpl implements Application {
 	private _stopped: boolean = false
 	
 	constructor(name: string, config: any) {
-		this.devMode = !!config.devMode
+		this.debug = !!config.debug
 		
 		this.assistant = new StoppableTemporalAssistantProxy(new WgsTemporalAssistant(globalThis, e => this.handleError(e)))
 		this.tweener = new tween.TweenerImpl(scene.node, e => this.handleError(e))

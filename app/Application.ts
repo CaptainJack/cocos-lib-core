@@ -7,7 +7,7 @@ import {Audio} from './Audio'
 import {Bundler} from './Bundler'
 
 export interface Application {
-	readonly devMode: boolean
+	readonly debug: boolean
 	readonly assistant: TemporalAssistant
 	readonly tweener: Tweener
 	readonly storage: LocalStorage
