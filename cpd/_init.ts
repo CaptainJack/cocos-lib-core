@@ -32,7 +32,7 @@ function factoryBrowserGuest(storage: LocalStorage): Promise<CpdAdapter> {
 
 function factoryBrowserOk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
 	return new Promise((resolve, reject) => {
-		assetManager.downloader.downloadScript('//api.ok.ru/js/fapi5.js', {scriptAsyncLoading: true}, error => {
+		assetManager.downloader.downloadScript('ok-fapi5.js', {scriptAsyncLoading: true}, error => {
 			if (error) {
 				reject(new Exception('Failed to load OK FAPI', error))
 			}
