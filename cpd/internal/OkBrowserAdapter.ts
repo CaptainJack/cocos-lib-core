@@ -4,6 +4,7 @@ import {Exception} from '../../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
 import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
+import {_random} from '../../tools/_random'
 
 export class OkBrowserAdapter extends AbstractBrowserAdapter {
 	public readonly purchaseAvailable: boolean = true
@@ -23,7 +24,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 					this._onPurchaseFail(data)
 				}
 				else {
-					this._onPurchaseSuccess(null, null)
+					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
 				}
 				
 				this._onPurchaseSuccess = EMPTY_FUNCTION

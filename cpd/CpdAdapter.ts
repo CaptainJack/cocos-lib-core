@@ -1,8 +1,6 @@
 import {CpdAccount} from './CpdAccount'
 
 export interface CpdAdapter {
-	readonly purchaseAvailable: boolean
-	
 	authorize(): Promise<CpdAccount | null>
 	
 	loadShop(ids: string[], receiver: (currency: string, products: Array<{id: string, price: number}>) => void): void
