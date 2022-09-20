@@ -1,7 +1,8 @@
-import {Asset, AssetManager, assetManager, ImageAsset, resources, Sprite, SpriteFrame, Texture2D} from 'cc'
+import {Asset, AssetManager, assetManager, ImageAsset, Sprite, SpriteFrame, Texture2D} from 'cc'
 import {Class} from '../capjack/tool/lang/_types'
 import {_string} from '../capjack/tool/lang/_string'
-import {asNullable, isNullable, isString} from '../capjack/tool/lang/_utils'
+import {isNullable, isString} from '../capjack/tool/lang/_utils'
+import {SceneVersatile} from '../../../main/lib-main/Scene'
 
 export namespace _assets {
 	
@@ -17,8 +18,14 @@ export namespace _assets {
 			const bundle = assetManager.getBundle(path.substring(0, i))
 			if (bundle) e = !!bundle.getInfoWithPath(path.substring(i + 1))
 		}
-		else {
+		else if (scene.versatile === SceneVersatile.ABSENT) {
 			e = !!assetManager.getBundle('core').getInfoWithPath(path)
+		}
+		else {
+			e = !!assetManager.getBundle('core-' + SceneVersatile.name(scene.versatile)).getInfoWithPath(path)
+			if (!e) {
+				e = !!assetManager.getBundle('core').getInfoWithPath(path)
+			}
 		}
 		
 		existsCache.set(path, e)
@@ -33,8 +40,14 @@ export namespace _assets {
 		if (i > 0) {
 			asset = getFromBundle(path.substring(0, i), path.substring(i + 1), type)
 		}
-		else {
+		else if (scene.versatile === SceneVersatile.ABSENT) {
 			asset = getFromBundle('core', path, type)
+		}
+		else {
+			asset = getFromBundle('core-' + SceneVersatile.name(scene.versatile), path, type)
+			if (!asset) {
+				asset = getFromBundle('core', path, type)
+			}
 		}
 		
 		if (!asset) {
@@ -42,6 +55,10 @@ export namespace _assets {
 		}
 		
 		return asset
+	}
+	
+	export function getOrNull<T extends Asset>(path: string, type: Class<T>): T | null {
+		return exists(path) ? get(path, type) : null
 	}
 	
 	function getFromBundle<T extends Asset>(bundle: string | AssetManager.Bundle, path: string, type: Class<T>): T | null {
