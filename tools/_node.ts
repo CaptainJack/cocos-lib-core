@@ -6,8 +6,11 @@ import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalA
 export const SKELETON_EMPTY_ATTACHMENT = sys.isNative ? '' : null
 
 declare module 'cc' {
-	interface Node {
+	
+	interface Extension {
 		getChildComponent<T extends Component>(path: string, type: Class<T>): T
+		
+		getChild(path: string): Node
 		
 		setOpacity(percent: number)
 		
@@ -28,15 +31,11 @@ declare module 'cc' {
 		setScaleX(percent: number)
 		
 		setScaleY(percent: number)
-		
-		getChild(path: string): Node
 	}
 	
-	interface Component {
-		getChildComponent<T extends Component>(path: string, type: Class<T>): T
-		
-		getChild(path: string): Node
-	}
+	interface Node extends Extension {}
+	
+	interface Component extends Extension {}
 }
 
 Node.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
@@ -66,14 +65,6 @@ Node.prototype.getChild = function (path: string): Node {
 		}
 	}
 	return null
-}
-
-Component.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
-	return this.node.getChildComponent(path, type)
-}
-
-Component.prototype.getChild = function(path: string): Node {
-	return this.node.getChild(path)
 }
 
 Node.prototype.setOpacity = function (percent: number) {
@@ -132,4 +123,54 @@ Node.prototype.setScaleX = function (percent: number) {
 
 Node.prototype.setScaleY = function (percent: number) {
 	this.setScale(this.scale.x, percent)
+}
+
+///
+
+Component.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
+	return this.node.getChildComponent(path, type)
+}
+
+Component.prototype.getChild = function(path: string): Node {
+	return this.node.getChild(path)
+}
+
+Component.prototype.setOpacity = function (percent: number) {
+	this.node.setOpacity(percent)
+}
+
+Component.prototype.setScaleFully = function (percent: number) {
+	this.node.setScaleFully(percent)
+}
+
+Component.prototype.setWidth = function (value: number) {
+	this.node.setWidth(value)
+}
+
+Component.prototype.getWidth = function():number {
+	return this.node.getWidth()
+}
+
+Component.prototype.setHeight = function (value: number) {
+	this.node.setHeight(value)
+}
+
+Component.prototype.getHeight = function():number {
+	return this.node.getHeight()
+}
+
+Component.prototype.setX = function (value: number) {
+	this.node.setX(value)
+}
+
+Component.prototype.setY = function (value: number) {
+	this.node.setY(value)
+}
+
+Component.prototype.setScaleX = function (value: number) {
+	this.node.setScaleX(value)
+}
+
+Component.prototype.setScaleY = function (value: number) {
+	this.node.setScaleY(value)
 }
