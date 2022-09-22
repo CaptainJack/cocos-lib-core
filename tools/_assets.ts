@@ -22,7 +22,7 @@ export namespace _assets {
 			e = !!assetManager.getBundle('core').getInfoWithPath(path)
 		}
 		else {
-			e = !!assetManager.getBundle('core-' + SceneVersatile.name(scene.versatile)).getInfoWithPath(path)
+			e = !!assetManager.getBundle('core-' + SceneVersatile.nameLower(scene.versatile)).getInfoWithPath(path)
 			if (!e) {
 				e = !!assetManager.getBundle('core').getInfoWithPath(path)
 			}
@@ -44,7 +44,7 @@ export namespace _assets {
 			asset = getFromBundle('core', path, type)
 		}
 		else {
-			asset = getFromBundle('core-' + SceneVersatile.name(scene.versatile), path, type)
+			asset = getFromBundle('core-' + SceneVersatile.nameLower(scene.versatile), path, type)
 			if (!asset) {
 				asset = getFromBundle('core', path, type)
 			}
