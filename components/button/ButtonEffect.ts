@@ -1,6 +1,6 @@
 import {_decorator} from 'cc'
 import {Button, ButtonState} from './Button'
-import {NormalizedComponent} from '../NormalizedComponent'
+import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 
 @_decorator.ccclass('ButtonEffect')
 @_decorator.menu('lib/button/ButtonEffect')

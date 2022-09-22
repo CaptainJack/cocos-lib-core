@@ -1,5 +1,5 @@
 import {_decorator, Node, NodeEventType, UITransform, Vec2, widgetManager} from 'cc'
-import {NormalizedComponent} from '../NormalizedComponent'
+import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 
 @_decorator.ccclass('Wrapper')
 @_decorator.menu('lib/layout/Wrapper')

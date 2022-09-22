@@ -1,5 +1,5 @@
 import {_decorator, ccenum, NodeEventType, Sprite, UITransform} from 'cc'
-import {NormalizedComponent} from '../NormalizedComponent'
+import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 
 export enum FilledScaledSpriteFix {
 	VERTICAL,

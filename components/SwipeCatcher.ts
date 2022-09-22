@@ -1,5 +1,5 @@
 import {_decorator, Enum, EventTouch, NodeEventType, Vec2} from 'cc'
-import {NormalizedComponent} from './NormalizedComponent'
+import {NormalizedComponent} from '../../../main/lib-main/components/NormalizedComponent'
 
 export enum SwipeDirection {
 	ANY,

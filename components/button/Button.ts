@@ -1,6 +1,6 @@
 import {_decorator, EventTouch, NodeEventType} from 'cc'
 import {Cancelable} from '../../capjack/tool/utils/Cancelable'
-import {NormalizedComponent} from '../NormalizedComponent'
+import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 
 export enum ButtonState {
 	NORMAL,
