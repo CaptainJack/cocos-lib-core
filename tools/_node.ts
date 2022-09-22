@@ -33,9 +33,17 @@ declare module 'cc' {
 		setScaleY(percent: number)
 	}
 	
-	interface Node extends Extension {}
+	interface Node extends Extension {
+		addChildWithKeepPosition(child: Node)
+	}
 	
 	interface Component extends Extension {}
+}
+
+Node.prototype.addChildWithKeepPosition = function (child: Node) {
+	const position = child.worldPosition.clone()
+	this.addChild(child)
+	child.setWorldPosition(position)
 }
 
 Node.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
