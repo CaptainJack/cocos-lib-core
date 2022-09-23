@@ -1,5 +1,5 @@
 import {Class} from '../capjack/tool/lang/_types'
-import {Component, Node, Renderable2D, sys, UIOpacity, UITransform} from 'cc'
+import {Component, Node, UIRenderer, sys, UIOpacity, UITransform} from 'cc'
 import {require} from '../capjack/tool/lang/_utils'
 import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalArgumentException'
 
@@ -85,14 +85,14 @@ Node.prototype.setOpacity = function (percent: number) {
 		opacityComponent.opacity = opacity
 	}
 	else {
-		const renderableComponent: Renderable2D = this.getComponent(Renderable2D)
+		const renderableComponent = this.getComponent(UIRenderer)
 		if (renderableComponent) {
 			const color = renderableComponent.color.clone()
 			color.a = opacity
 			renderableComponent.color = color
 		}
 		else {
-			throw new IllegalArgumentException('UIOpacity or Renderable2D component required')
+			throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
 		}
 	}
 }

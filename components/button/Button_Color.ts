@@ -1,12 +1,12 @@
 import {ButtonState} from './Button'
-import {_decorator, Color, Renderable2D} from 'cc'
+import {_decorator, Color, UIRenderer} from 'cc'
 import {ButtonEffect} from './ButtonEffect'
 
 @_decorator.ccclass('Button_Color')
 @_decorator.menu('lib/button/Button_Color')
-@_decorator.requireComponent(Renderable2D)
+@_decorator.requireComponent(UIRenderer)
 export class Button_Color extends ButtonEffect {
-	private _target: Renderable2D
+	private _target: UIRenderer
 	
 	private _normal: Color
 	
@@ -20,7 +20,7 @@ export class Button_Color extends ButtonEffect {
 	private _disabled: Color = Color.TRANSPARENT.clone()
 	
 	protected onLoad() {
-		this._target = this.node.getComponent(Renderable2D)
+		this._target = this.node.getComponent(UIRenderer)
 		this._normal = this._target.color.clone()
 		super.onLoad()
 	}

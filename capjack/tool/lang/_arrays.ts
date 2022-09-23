@@ -9,7 +9,7 @@ export namespace _array {
 		return 'Collection is empty.'
 	}
 	
-	export function copy<T>(source: Array<T>, target: Array<T>, targetOffset: number = 0, startIndex: number = 0, endIndex: number = source.length) {
+	export function copy<T>(source: ArrayLike<T>, target: Array<T>, targetOffset: number = 0, startIndex: number = 0, endIndex: number = source.length) {
 		let sourceIndex = startIndex
 		let targetIndex = targetOffset
 		while (sourceIndex < endIndex) {
@@ -21,7 +21,7 @@ export namespace _array {
 		return collection.indexOf(element) !== -1
 	}
 	
-	export function indexOf<T>(collection: Array<T>, predicate: (element: T) => boolean): number {
+	export function indexOf<T>(collection: ArrayLike<T>, predicate: (element: T) => boolean): number {
 		for (let i = 0, l = collection.length; i < l; i++) {
 			if (predicate(collection[i])) {
 				return i
@@ -30,15 +30,15 @@ export namespace _array {
 		return -1
 	}
 	
-	export function any<T>(collection: Array<T>, predicate: (element: T) => boolean): boolean {
+	export function any<T>(collection: ArrayLike<T>, predicate: (element: T) => boolean): boolean {
 		return indexOf(collection, predicate) !== -1
 	}
 	
-	export function isEmpty(collection: Array<any>): boolean {
+	export function isEmpty(collection: ArrayLike<any>): boolean {
 		return collection.length === 0
 	}
 	
-	export function isNotEmpty(collection: Array<any>): boolean {
+	export function isNotEmpty(collection: ArrayLike<any>): boolean {
 		return collection.length !== 0
 	}
 	
@@ -51,21 +51,21 @@ export namespace _array {
 		return null
 	}
 	
-	export function first<T>(collection: Array<T>): T {
+	export function first<T>(collection: ArrayLike<T>): T {
 		if (isEmpty(collection)) throw new NoSuchElementException(messageCollectionIsEmpty())
 		return collection[0]
 	}
 	
-	export function last<T>(collection: Array<T>): T {
+	export function last<T>(collection: ArrayLike<T>): T {
 		if (isEmpty(collection)) throw new NoSuchElementException(messageCollectionIsEmpty())
 		return collection[collection.length - 1]
 	}
 	
-	export function getOrLast<T>(collection: Array<T>, i: number): T {
+	export function getOrLast<T>(collection: ArrayLike<T>, i: number): T {
 		return collection.length > i ? collection[i] : last(collection)
 	}
 	
-	export function flatMap<T, R>(collection: Array<T>, transform: (element: T) => Array<R>): Array<R> {
+	export function flatMap<T, R>(collection: ArrayLike<T>, transform: (element: T) => Array<R>): Array<R> {
 		const result = []
 		for (let i = 0, l = collection.length; i < l; i++) {
 			const array = transform(collection[i])
@@ -74,7 +74,7 @@ export namespace _array {
 		return result
 	}
 	
-	export function sum<T>(collection: Array<number>): number {
+	export function sum<T>(collection: ArrayLike<number>): number {
 		let result = 0
 		for (let i = 0, l = collection.length; i < l; i++) {
 			result += collection[i]
@@ -82,7 +82,7 @@ export namespace _array {
 		return result
 	}
 	
-	export function sumOf<T>(collection: Array<T>, selector: (element: T, index: number) => number): number {
+	export function sumOf<T>(collection: ArrayLike<T>, selector: (element: T, index: number) => number): number {
 		let result = 0
 		for (let i = 0, l = collection.length; i < l; i++) {
 			result += selector(collection[i], i)

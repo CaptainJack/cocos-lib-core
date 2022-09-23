@@ -1,6 +1,6 @@
 import {tween_common as _tc} from './tween-common'
 import {NodeTweenParameters, TweenParameter} from '../../Tweener'
-import {Component, Node, Renderable2D, UIOpacity} from 'cc'
+import {Component, Node, UIOpacity, UIRenderer} from 'cc'
 import {IllegalArgumentException} from '../../../capjack/tool/lang/exceptions/IllegalArgumentException'
 import {EMPTY_FUNCTION, isNullable, isNumber} from '../../../capjack/tool/lang/_utils'
 import {BezierCurve} from '../../../tools/BezierCurve'
@@ -39,11 +39,11 @@ export namespace tween_node {
 	
 	abstract class SingleNumberMotion implements NodeMotion {
 		protected target: Node
+		protected update: (k: number) => void = EMPTY_FUNCTION
 		private to: number
 		private from: number = null
 		private delta: number
 		private modify: (p: number, current: number, from: number, to: number) => number = modifyDummy
-		protected update: (k: number) => void = EMPTY_FUNCTION
 		
 		constructor(protected parameter: TweenParameter<number>, update: (k: number) => void) {
 			if (!isNullable(update)) {
@@ -167,12 +167,12 @@ export namespace tween_node {
 	}
 	
 	class Motion_Position implements NodeMotion {
+		protected update: (k: number) => void = EMPTY_FUNCTION
 		private target: Node
 		private to: {x: number, y: number}
 		private from: {x: number, y: number} = null
 		private delta: {x: number, y: number}
 		private modify: (p: number, current: {x: number, y: number}, from: {x: number, y: number}, to: {x: number, y: number}) => {x: number, y: number} = modifyDummy
-		protected update: (k: number) => void = EMPTY_FUNCTION
 		
 		constructor(private parameter: TweenParameter<{x: number, y: number}>, update: (k: number) => void) {
 			if (!isNullable(update)) {
@@ -238,16 +238,16 @@ export namespace tween_node {
 			super(1, update)
 		}
 		
+		public clone(): Motion_PositionBezierCurve {
+			return new Motion_PositionBezierCurve(this.curve, this.update)
+		}
+		
 		protected defineFrom(): number {
-			return 0;
+			return 0
 		}
 		
 		protected set(value: number) {
 			this.target.setPosition(this.curve.x(value), this.curve.y(value))
-		}
-		
-		public clone(): Motion_PositionBezierCurve {
-			return new Motion_PositionBezierCurve(this.curve, this.update)
 		}
 		
 	}
@@ -256,17 +256,17 @@ export namespace tween_node {
 		private behavior: Motion_Opacity_Behavior
 		
 		public start(target: Node) {
-			let component: UIOpacity | Renderable2D = target.getComponent(UIOpacity)
+			let component: UIOpacity | UIRenderer = target.getComponent(UIOpacity)
 			if (component) {
 				this.behavior = new Motion_Opacity_Behavior_UIOpacity(component)
 			}
 			else {
-				component = target.getComponent(Renderable2D)
+				component = target.getComponent(UIRenderer)
 				if (component) {
-					this.behavior = new Motion_Opacity_Behavior_Renderable2D(component)
+					this.behavior = new Motion_Opacity_Behavior_UIRenderer(component)
 				}
 				else {
-					throw new IllegalArgumentException('UIOpacity or Renderable2D component required')
+					throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
 				}
 			}
 			super.start(target)
@@ -321,7 +321,7 @@ export namespace tween_node {
 		}
 	}
 	
-	class Motion_Opacity_Behavior_Renderable2D extends Motion_Opacity_Behavior_Component<Renderable2D> {
+	class Motion_Opacity_Behavior_UIRenderer extends Motion_Opacity_Behavior_Component<UIRenderer> {
 		public defineFrom(): number {
 			return this.component.color.a
 		}
