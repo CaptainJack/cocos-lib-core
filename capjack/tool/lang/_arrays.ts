@@ -9,6 +9,12 @@ export namespace _array {
 		return 'Collection is empty.'
 	}
 	
+	export function subBefore(collection: Array<number>, value: number, inclusive: boolean = false) {
+		let i = collection.indexOf(value)
+		if (inclusive) i++
+		return collection.slice(0, i)
+	}
+	
 	export function copy<T>(source: ArrayLike<T>, target: Array<T>, targetOffset: number = 0, startIndex: number = 0, endIndex: number = source.length) {
 		let sourceIndex = startIndex
 		let targetIndex = targetOffset
