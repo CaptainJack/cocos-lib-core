@@ -6,6 +6,8 @@ export interface LongCreepSettings {
 	boundDuration?: number
 	boundValue?: number
 	instantReduction?: boolean
+	onStart?: () => void
+	onEnd?: () => void
 }
 
 export class LongCreep {
@@ -35,8 +37,8 @@ export class LongCreep {
 	}
 	
 	public set(value: Long | number) {
-		this.stopAnim()
 		this.update(Long.from(value))
+		this.stopAnim()
 	}
 	
 	public run(value: Long | number) {
@@ -99,6 +101,7 @@ export class LongCreep {
 		if (!this.running) {
 			this.running = true
 			director.on(Director.EVENT_BEFORE_UPDATE, this.updateAnim, this)
+			if (this.settings.onStart) this.settings.onStart()
 		}
 	}
 	
@@ -113,6 +116,7 @@ export class LongCreep {
 		if (this.running) {
 			this.running = false
 			director.off(Director.EVENT_BEFORE_UPDATE, this.updateAnim, this)
+			if (this.settings.onEnd) this.settings.onEnd()
 		}
 	}
 }

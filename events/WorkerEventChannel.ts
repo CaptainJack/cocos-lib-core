@@ -1,6 +1,7 @@
 import {DirectEventChannel} from './DirectEventChannel'
 import {Assistant} from '../capjack/tool/utils/assistant/Assistant'
 import {Worker} from '../capjack/tool/utils/worker/Worker'
+import {requireNotNullable} from '../capjack/tool/lang/_utils'
 
 export class WorkerEventChannel<E> extends DirectEventChannel<E> {
 	
@@ -12,6 +13,7 @@ export class WorkerEventChannel<E> extends DirectEventChannel<E> {
 	}
 	
 	emit(event) {
+		requireNotNullable(event)
 		this._worker.defer(() => super.emit(event))
 	}
 }

@@ -12,16 +12,19 @@ ccenum(FillingType)
 
 @_decorator.ccclass('FillingScaleNode')
 @_decorator.menu('lib/layout/FillingScaleNode')
+@_decorator.executeInEditMode(true)
 export class FillingScaleLayout extends NormalizedComponent {
 	@_decorator.property({type: FillingType, visible: true})
 	private _type: FillingType = FillingType.INSIDE
 	
 	protected onEnable() {
 		this.node.parent.on(Node.EventType.SIZE_CHANGED, this.fill, this)
+		this.node.on(Node.EventType.SIZE_CHANGED, this.fill, this)
 	}
 	
 	protected onDisable() {
 		this.node.parent.off(Node.EventType.SIZE_CHANGED, this.fill, this)
+		this.node.off(Node.EventType.SIZE_CHANGED, this.fill, this)
 	}
 	
 	protected start() {
