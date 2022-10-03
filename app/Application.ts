@@ -12,7 +12,7 @@ export interface Application {
 	readonly tweener: Tweener
 	readonly storage: LocalStorage
 	readonly localization: Localization
-	readonly events: EventChannel<object>
+	readonly events: EventChannel<any>
 	readonly audio: Audio
 	readonly bundler: Bundler
 }
