@@ -15,7 +15,7 @@ export class Localization_RU extends AbstractLocalization {
 			case 'RUB':
 				return this.formatFractionNumber(value, 0) + ' ₽'
 			case 'OK':
-				return this.formatIntegerNumber(value) + ' ok'
+				return this.formatIntegerNumber(value) + ' OK'
 			default:
 				return this.formatFractionNumber(value, 2) + ' ' + currency
 		}
