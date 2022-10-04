@@ -1,6 +1,8 @@
-import {_decorator, EventTouch, NodeEventType} from 'cc'
+import {_decorator, EventKeyboard, EventTouch, Input, input, NodeEventType} from 'cc'
 import {Cancelable} from '../../capjack/tool/utils/Cancelable'
 import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
+import {_string} from '../../capjack/tool/lang/_string'
+import {IllegalArgumentException} from '../../capjack/tool/lang/exceptions/IllegalArgumentException'
 
 export enum ButtonState {
 	NORMAL,
@@ -25,8 +27,12 @@ export class Button extends NormalizedComponent {
 	public data: string = ''
 	
 	@_decorator.property({visible: true})
-	private _holdable: boolean = false
+	private _key: string = ''
 	
+	private _keyed: boolean = false
+	private _keyCode: number
+	
+	private _holdable: boolean = false
 	private _holdTask: Cancelable = Cancelable.DUMMY
 	
 	private _state: ButtonState = ButtonState.NORMAL
@@ -63,14 +69,18 @@ export class Button extends NormalizedComponent {
 	}
 	
 	public onHold(handler: (button: Button) => void, target?: any) {
-		if (this._holdable) {
-			if (target) handler = handler.bind(target)
-			this._holdHandlers.push(handler)
-		}
+		if (target) handler = handler.bind(target)
+		this._holdHandlers.push(handler)
+		this._holdable = true
 	}
 	
 	public removeAllPressHandlers() {
 		this._pressHandlers.length = 0
+	}
+	
+	public removeAllHoldHandlers() {
+		this._holdHandlers.length = 0
+		this._holdable = false
 	}
 	
 	public removeAllStateHandlers() {
@@ -84,7 +94,21 @@ export class Button extends NormalizedComponent {
 		}
 	}
 	
+	// noinspection JSUnusedLocalSymbols
 	public drawState(state: ButtonState) {
+	}
+	
+	protected onLoad() {
+		super.onLoad();
+		this._keyed = !_string.isBlank(this._key)
+		if (this._keyed) {
+			if (_string.contains(this._key, 'SPACE')) {
+				this._keyCode = 32
+			}
+			else {
+				throw new IllegalArgumentException(this._key)
+			}
+		}
 	}
 	
 	protected onEnable() {
@@ -97,10 +121,17 @@ export class Button extends NormalizedComponent {
 		this.node.on(NodeEventType.TOUCH_CANCEL, this.onTouchCancel, this)
 		this.node.on(NodeEventType.MOUSE_ENTER, this.onMouseEnter, this)
 		this.node.on(NodeEventType.MOUSE_LEAVE, this.onMouseLeave, this)
+		
+		if (this._keyed) {
+			input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+			input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
+		}
 	}
 	
 	protected onDisable() {
 		super.onDisable()
+		
+		this.stopHold()
 		
 		this._pressed = false
 		this._hovered = false
@@ -111,12 +142,18 @@ export class Button extends NormalizedComponent {
 		this.node.off(NodeEventType.TOUCH_CANCEL, this.onTouchCancel, this)
 		this.node.off(NodeEventType.MOUSE_ENTER, this.onMouseEnter, this)
 		this.node.off(NodeEventType.MOUSE_LEAVE, this.onMouseLeave, this)
+		
+		if (this._keyed) {
+			input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+			input.off(Input.EventType.KEY_UP, this.onKeyUp, this)
+		}
 	}
 	
 	protected onDestroy() {
 		super.onDestroy()
 		
 		this.removeAllPressHandlers()
+		this.removeAllHoldHandlers()
 		this.removeAllStateHandlers()
 	}
 	
@@ -149,20 +186,41 @@ export class Button extends NormalizedComponent {
 		return ButtonState.DISABLED
 	}
 	
-	private onTouchStart(event: EventTouch) {
-		event.propagationStopped = true
+	private onKeyDown(event: EventKeyboard) {
+		if (!this._interactive) return
 		
+		if (event.keyCode == this._keyCode) {
+			event.propagationStopped = true
+			
+			this._pressed = true
+			this.updateState()
+			this.startHold()
+		}
+	}
+	
+	private onKeyUp(event: EventKeyboard) {
+		if (!this._interactive) return
+		
+		if (this._pressed && event.keyCode == this._keyCode) {
+			event.propagationStopped = true
+			this._pressed = false
+			this.updateState()
+			this.stopHold()
+			this.executePress()
+		}
+	}
+	
+	private onTouchStart(event: EventTouch) {
 		if (!this._interactive) {
 			return
 		}
 		
+		event.propagationStopped = true
+		
 		this._pressed = true
 		this._moving = false
 		this.updateState()
-		
-		if (this._holdable) {
-			this._holdTask = app.assistant.schedule(1000, () => this.doHold())
-		}
+		this.startHold()
 	}
 	
 	private onTouchMove(event: EventTouch) {
@@ -201,8 +259,7 @@ export class Button extends NormalizedComponent {
 			event.propagationStopped = true
 			this._pressed = false
 			this.updateState()
-			this._holdTask.cancel()
-			this._holdTask = Cancelable.DUMMY
+			this.stopHold()
 			this.executePress()
 		}
 	}
@@ -211,8 +268,7 @@ export class Button extends NormalizedComponent {
 		if (this._pressed && !this._moving) {
 			this._pressed = false
 			this.updateState()
-			this._holdTask.cancel()
-			this._holdTask = Cancelable.DUMMY
+			this.stopHold()
 			this.executeHold()
 		}
 	}
@@ -239,6 +295,17 @@ export class Button extends NormalizedComponent {
 		}
 		this._hovered = false
 		this.updateState()
+	}
+	
+	private startHold() {
+		if (this._holdable) {
+			this._holdTask = app.assistant.schedule(1000, () => this.doHold())
+		}
+	}
+	
+	private stopHold() {
+		this._holdTask.cancel()
+		this._holdTask = Cancelable.DUMMY
 	}
 }
 

@@ -103,4 +103,9 @@ export namespace _string {
 	export function endWith(value: string, suffix: string): string {
 		return endsWith(value, suffix) ? value : (value + suffix)
 	}
+	
+	export function contains(value: string, part: string) {
+		return value.indexOf(part) !== -1
+	}
+	
 }
