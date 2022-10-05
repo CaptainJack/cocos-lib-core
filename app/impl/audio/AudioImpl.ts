@@ -33,11 +33,12 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	}
 	
 	public prepare(clip: string | AudioClip, settings?: SoundSettings): Sound {
+		if (isEmpty(clip)) return DummySound.INSTANCE
+		
 		let name : string
 		if (isString(clip)) {
 			name = clip
 			clip  = this.extractClip(name)
-			if (!clip) return DummySound.INSTANCE
 		}
 		else {
 			name = clip.name
