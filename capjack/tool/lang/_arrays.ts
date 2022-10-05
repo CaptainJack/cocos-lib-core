@@ -67,6 +67,12 @@ export namespace _array {
 		return collection[collection.length - 1]
 	}
 	
+	export function middle<T>(collection: ArrayLike<T>): T {
+		if (isEmpty(collection)) throw new NoSuchElementException(messageCollectionIsEmpty())
+		const half = collection.length / 2 | 0
+		return collection[half]
+	}
+	
 	export function getOrLast<T>(collection: ArrayLike<T>, i: number): T {
 		return collection.length > i ? collection[i] : last(collection)
 	}
