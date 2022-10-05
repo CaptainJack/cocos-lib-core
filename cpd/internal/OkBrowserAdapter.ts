@@ -5,6 +5,7 @@ import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
 import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
 import {_random} from '../../tools/_random'
+import {Logging} from '../../capjack/tool/logging/Logging'
 
 export class OkBrowserAdapter extends AbstractBrowserAdapter {
 	public readonly purchaseAvailable: boolean = true
@@ -19,12 +20,14 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 		this._userId = userId
 		
 		window['API_callback'] = (method: string, result: string, data: any) => {
+			Logging.getLogger('cpd').debug(`OK API_callback (method: ${method}, result: ${result}, data: ${JSON.stringify(data)}`)
+			
 			if (method == 'showPayment') {
-				if (result == 'error') {
-					this._onPurchaseFail(data)
+				if (result == 'ok') {
+					// this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
 				}
 				else {
-					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
+					// this._onPurchaseFail(data)
 				}
 				
 				this._onPurchaseSuccess = EMPTY_FUNCTION
