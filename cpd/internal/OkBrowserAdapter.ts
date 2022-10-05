@@ -24,10 +24,10 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 			
 			if (method == 'showPayment') {
 				if (result == 'ok') {
-					// this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
+					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
 				}
 				else {
-					// this._onPurchaseFail(data)
+					this._onPurchaseFail(data)
 				}
 				
 				this._onPurchaseSuccess = EMPTY_FUNCTION
