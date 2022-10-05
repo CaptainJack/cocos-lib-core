@@ -1,4 +1,4 @@
-import {_decorator, EventKeyboard, EventTouch, Input, input, NodeEventType} from 'cc'
+import {_decorator, AudioClip, EventKeyboard, EventTouch, Input, input, NodeEventType} from 'cc'
 import {Cancelable} from '../../capjack/tool/utils/Cancelable'
 import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 import {_string} from '../../capjack/tool/lang/_string'
@@ -28,6 +28,9 @@ export class Button extends NormalizedComponent {
 	
 	@_decorator.property({visible: true})
 	private _key: string = ''
+	
+	@_decorator.property({visible: true, type: AudioClip})
+	private _soundPress: AudioClip = null
 	
 	private _keyed: boolean = false
 	private _keyCode: number
@@ -158,6 +161,8 @@ export class Button extends NormalizedComponent {
 	}
 	
 	protected executePress() {
+		if (this._soundPress) app.audio.play(this._soundPress)
+		
 		for (const handler of this._pressHandlers) {
 			handler(this)
 		}

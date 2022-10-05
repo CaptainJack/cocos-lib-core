@@ -1,12 +1,13 @@
 import {Stoppable} from '../capjack/tool/utils/Stoppable'
 import {Cancelable} from '../capjack/tool/utils/Cancelable'
+import {AudioClip} from 'cc'
 
 export interface Audio extends Volumeable {
-	play(name: string, settings?: SoundSettings): Sound
+	play(clip: string | AudioClip, settings?: SoundSettings): Sound
 	
-	prepare(name: string, settings?: SoundSettings): Sound
+	prepare(clip: string | AudioClip, settings?: SoundSettings): Sound
 	
-	shot(name: string)
+	shot(clip: string | AudioClip)
 	
 	getDuration(name): number
 	

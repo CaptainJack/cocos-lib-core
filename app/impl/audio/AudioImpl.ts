@@ -5,7 +5,7 @@ import {RealSound} from './RealSound'
 import {RealSoundOwner} from './RealSoundOwner'
 import {Tweener} from '../../Tweener'
 import {Audio, Sound, SoundSettings} from '../../Audio'
-import {isEmpty} from '../../../capjack/tool/lang/_utils'
+import {isEmpty, isString} from '../../../capjack/tool/lang/_utils'
 import {_assets} from '../../../tools/_assets'
 import {ArrayQueue} from '../../../capjack/tool/utils/collections/ArrayQueue'
 import {Cancelable} from '../../../capjack/tool/utils/Cancelable'
@@ -32,9 +32,16 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		return clip ? (1000 * clip.getDuration()) : 0
 	}
 	
-	public prepare(name: string, settings?: SoundSettings): Sound {
-		const clip = this.extractClip(name)
-		if (!clip) return DummySound.INSTANCE
+	public prepare(clip: string | AudioClip, settings?: SoundSettings): Sound {
+		let name : string
+		if (isString(clip)) {
+			name = clip
+			clip  = this.extractClip(name)
+			if (!clip) return DummySound.INSTANCE
+		}
+		else {
+			name = clip.name
+		}
 		
 		const source = this.provideSource()
 		const sound = new RealSound(this.tweener, this, name, source, clip, settings)
@@ -42,15 +49,19 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		return sound
 	}
 	
-	public play(name: string, settings?: SoundSettings): Sound {
-		const sound = this.prepare(name, settings)
+	public play(clip: string | AudioClip, settings?: SoundSettings): Sound {
+		const sound = this.prepare(clip, settings)
 		sound.play()
 		return sound
 	}
 	
-	public shot(name: string) {
-		if (isEmpty(name)) return
-		const clip = this.extractClip(name)
+	public shot(clip: string | AudioClip) {
+		if (isEmpty(clip)) return
+		
+		if (isString(clip)) {
+			clip  = this.extractClip(clip)
+		}
+		
 		if (clip) {
 			this._shotSource.playOneShot(clip)
 		}
