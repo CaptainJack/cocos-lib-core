@@ -90,15 +90,16 @@ export class Button extends NormalizedComponent {
 		this._stateHandlers.length = 0
 	}
 	
-	public redraw() {
-		this.drawState(this._state)
+	public redraw(state: ButtonState = null) {
+		if (!state) state = this._state
+		this.drawState(state)
 		for (const handler of this._stateHandlers) {
-			handler(this._state)
+			handler(state)
 		}
 	}
 	
 	// noinspection JSUnusedLocalSymbols
-	public drawState(state: ButtonState) {
+	protected drawState(state: ButtonState) {
 	}
 	
 	protected onLoad() {
