@@ -2,7 +2,11 @@ declare namespace devtodev {
 	
 	function setUserId(id: string)
 	
+	function getUserId(): string
+	
 	function setCurrentLevel(level: number)
+	
+	function getCurrentLevel(): number
 	
 	function levelUp(
 		level: number,

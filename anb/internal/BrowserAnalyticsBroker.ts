@@ -7,8 +7,8 @@ import {Long} from '../../capjack/tool/lang/Long'
 export class BrowserAnalyticsBroker extends BaseAnalyticsBroker {
 	
 	public init(config: AnalyticsBrokerConfig): Promise<void> {
-		devtodev.setUserId(config.userId)
-		devtodev.setCurrentLevel(config.userLevel)
+		if (devtodev.getUserId() !== config.userId) devtodev.setUserId(config.userId)
+		if (devtodev.getCurrentLevel() !== config.userLevel) devtodev.setCurrentLevel(config.userLevel)
 		return Promise.resolve()
 	}
 	
