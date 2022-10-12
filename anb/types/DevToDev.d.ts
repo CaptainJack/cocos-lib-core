@@ -1,13 +1,8 @@
 declare namespace devtodev {
 	
-	function initialize(
-		appID: string,
-		config?: {
-			userId?: string,
-			currentLevel?: number,
-			trackingAvailability?: boolean,
-			logLevel?: ('No' | 'Debug' | 'Error')
-		}): void
+	function setUserId(id: string)
+	
+	function setCurrentLevel(level: number)
 	
 	function levelUp(
 		level: number,

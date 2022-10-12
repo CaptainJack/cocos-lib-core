@@ -11,23 +11,23 @@ export function initAnb(config: AnalyticsBrokerConfig): Promise<void> {
 	
 	let broker: InternalAnalyticsBroker
 	
-	if (config.dtd) {
-		if (sys.isNative) {
-			if (sys.os == sys.OS.IOS) {
-				// broker = new Apple()
-				throw new UnsupportedOperationException()
-			}
-			if (sys.os == sys.OS.ANDROID) {
-				// broker = new Android()
-				throw new UnsupportedOperationException()
-			}
+	if (sys.isNative) {
+		if (sys.os == sys.OS.IOS) {
+			// broker = new Apple()
+			throw new UnsupportedOperationException()
 		}
-		else {
-			broker = new BrowserAnalyticsBroker()
+		if (sys.os == sys.OS.ANDROID) {
+			// broker = new Android()
+			throw new UnsupportedOperationException()
 		}
 	}
 	else {
-		broker = new DummyAnalyticsBroker()
+		if (window['devtodev']) {
+			broker = new BrowserAnalyticsBroker()
+		}
+		else {
+			broker = new DummyAnalyticsBroker()
+		}
 	}
 	
 	window['anb'] = broker
@@ -36,9 +36,6 @@ export function initAnb(config: AnalyticsBrokerConfig): Promise<void> {
 }
 
 export type AnalyticsBrokerConfig = {
-	userId: number
+	userId: string
 	userLevel: number
-	debug?: boolean
-	
-	dtd?: string
 }

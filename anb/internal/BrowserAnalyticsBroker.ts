@@ -1,4 +1,3 @@
-import {assetManager} from 'cc'
 import {AnalyticsBrokerConfig} from '../_init'
 import {BaseAnalyticsBroker} from './BaseAnalyticsBroker'
 import {AnalyticsBrokerGender} from '../AnalyticsBroker'
@@ -8,18 +7,9 @@ import {Long} from '../../capjack/tool/lang/Long'
 export class BrowserAnalyticsBroker extends BaseAnalyticsBroker {
 	
 	public init(config: AnalyticsBrokerConfig): Promise<void> {
-		return new Promise(resolve => {
-			assetManager.downloader.downloadScript('//cdn.devtodev.com/sdk/web/v2/devtodevsdk.js', {scriptAsyncLoading: true}, error => {
-				if (!error) {
-					devtodev.initialize(config.dtd, {
-						userId: config.userId.toString(),
-						currentLevel: config.userLevel,
-						logLevel: config.debug ? 'Debug' : 'No'
-					})
-				}
-				resolve()
-			})
-		})
+		devtodev.setUserId(config.userId)
+		devtodev.setCurrentLevel(config.userLevel)
+		return Promise.resolve()
 	}
 	
 	public tutorial(step: number) {
