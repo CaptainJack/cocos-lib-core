@@ -15,8 +15,8 @@ export abstract class BaseAnalyticsBroker implements InternalAnalyticsBroker {
 	public abstract profile(profile: {name?: string; email?: string; phone?: string; photo?: string; gender?: AnalyticsBrokerGender; age?: number})
 	
 	public realPayment(orderId: string, productId: string, price: number, currency: string) {
-		currency = this.normaliseRealCurrency(currency)
 		price = this.normaliseRealPrice(currency, price)
+		currency = this.normaliseRealCurrency(currency)
 		this.doRealPayment(orderId, productId, price, currency)
 	}
 	
