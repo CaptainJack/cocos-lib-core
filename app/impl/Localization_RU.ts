@@ -4,7 +4,7 @@ import {AbstractLocalization} from './AbstractLocalization'
 
 export class Localization_RU extends AbstractLocalization {
 	
-	public formatPrice(value: number | Long, currency: string): string {
+	public formatPrice(value: number, currency: string): string {
 		switch (currency) {
 			case 'USD':
 				return '$ ' + this.formatFractionNumber(value, 2)
@@ -16,6 +16,8 @@ export class Localization_RU extends AbstractLocalization {
 				return this.formatFractionNumber(value, 0) + ' ₽'
 			case 'OK':
 				return this.formatIntegerNumber(value) + ' OK'
+			case 'VK':
+				return this.formatIntegerNumber(value) + ' ' + _format.defineWordDeclinationRu(value, 'голос', 'голоса', 'голосов')
 			default:
 				return this.formatFractionNumber(value, 2) + ' ' + currency
 		}

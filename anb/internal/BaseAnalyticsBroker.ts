@@ -16,15 +16,23 @@ export abstract class BaseAnalyticsBroker implements InternalAnalyticsBroker {
 	
 	public realPayment(orderId: string, productId: string, price: number, currency: string) {
 		currency = this.normaliseRealCurrency(currency)
+		price = this.normaliseRealPrice(currency, price)
 		this.doRealPayment(orderId, productId, price, currency)
 	}
 	
 	protected abstract doRealPayment(orderId: string, productId: string, price: number, currency: string)
 	
 	private normaliseRealCurrency(currency: string): string {
-		if (currency == 'OK') {
+		if (currency == 'OK' || currency == 'VK') {
 			return 'RUB'
 		}
 		return currency
+	}
+	
+	private normaliseRealPrice(currency: string, price: number) {
+		if (currency == 'VK') {
+			return price * 7
+		}
+		return price
 	}
 }

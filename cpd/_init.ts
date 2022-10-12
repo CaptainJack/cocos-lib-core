@@ -6,6 +6,7 @@ import {GuestBrowserAdapter} from './internal/GuestBrowserAdapter'
 import {Exception} from '../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../capjack/tool/lang/_errors'
 import {OkBrowserAdapter} from './internal/OkBrowserAdapter'
+import {VkBrowserAdapter} from './internal/VkBrowserAdapter'
 
 export function initCpd(storage: LocalStorage): Promise<CpdAdapter> {
 	return sys.isNative ? factoryNative() : factoryBrowser(storage)
@@ -23,6 +24,11 @@ function factoryBrowser(storage: LocalStorage): Promise<CpdAdapter> {
 		return factoryBrowserOk(storage, urp)
 	}
 	
+	// VK
+	if (!!urp['api_url'] && !!urp['api_id'] && !!urp['viewer_id']) {
+		return factoryBrowserVk(storage, urp)
+	}
+	
 	return factoryBrowserGuest(storage)
 }
 
@@ -32,9 +38,9 @@ function factoryBrowserGuest(storage: LocalStorage): Promise<CpdAdapter> {
 
 function factoryBrowserOk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
 	return new Promise((resolve, reject) => {
-		assetManager.downloader.downloadScript('ok-fapi5.js', {scriptAsyncLoading: true}, error => {
+		assetManager.downloader.downloadScript('//bo.capjack.ru/assets/cpd-ok.js', {scriptAsyncLoading: true}, error => {
 			if (error) {
-				reject(new Exception('Failed to load OK FAPI', error))
+				reject(new Exception('Failed to load CPD OK', error))
 			}
 			else {
 				FAPI.init(urp['api_server'], urp['apiconnection'],
@@ -42,9 +48,31 @@ function factoryBrowserOk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
 						resolve(new OkBrowserAdapter(storage, urp['logged_user_id']))
 					},
 					function (error) {
-						reject(new Exception('Failed to init OK FAPI', extractError(error)))
+						reject(new Exception('Failed to init CPD OK', extractError(error)))
 					}
 				)
+			}
+		})
+	})
+}
+
+function factoryBrowserVk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
+	return new Promise((resolve, reject) => {
+		assetManager.downloader.downloadScript('//bo.capjack.ru/assets/cpd-vk.js', {scriptAsyncLoading: true}, error => {
+			if (error) {
+				reject(new Exception('Failed to load CPD VK', error))
+			}
+			else {
+				vkBridge.send('VKWebAppInit')
+					.then(d => {
+						if (d.result) {
+							resolve(new VkBrowserAdapter(storage, urp['viewer_id']))
+						}
+						else {
+							reject(new Exception('Failed to init CPD VK'))
+						}
+					})
+					.catch(e => reject(new Exception('Failed to init CPD VK', extractError(e))))
 			}
 		})
 	})
