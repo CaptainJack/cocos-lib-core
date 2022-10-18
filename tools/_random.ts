@@ -1,4 +1,5 @@
 import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalArgumentException'
+import {_array} from '../capjack/tool/lang/_arrays'
 
 export namespace _random {
 	export function int(bound: number): number {
@@ -27,5 +28,43 @@ export namespace _random {
 		if (l == 0) return null
 		if (l == 1) return collection[0]
 		return collection[int(l)]
+	}
+}
+
+export class WeightRandomizer {
+	private readonly _totalWeight: number
+	
+	constructor(
+		private _weights: Array<number>
+	) {
+		this._totalWeight = _array.sum(this._weights)
+	}
+	
+	nextIndex(): number {
+		const r = _random.int(this._totalWeight)
+		let a = 0
+		let i = 0
+		
+		while (true) {
+			a += this._weights[i]
+			if (a > r) {
+				return i
+			}
+			++i
+		}
+	}
+}
+
+
+export class ValuesWeightRandomizer<T> extends WeightRandomizer {
+	constructor(
+		private _values: Array<T>,
+		weights: Array<number>
+	) {
+		super(weights)
+	}
+	
+	public nextValue(): T {
+		return this._values[this.nextIndex()]
 	}
 }

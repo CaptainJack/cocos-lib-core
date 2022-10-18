@@ -139,4 +139,11 @@ export namespace _array {
 			if (!contains(collection, e)) collection.push(e)
 		}
 	}
+	
+	export function range(from: number, to: number, toInclusive: boolean = false): Array<number> {
+		if (toInclusive) ++to
+		const a = []
+		for (let i = from; i < to; i++) a.push(i)
+		return a
+	}
 }
