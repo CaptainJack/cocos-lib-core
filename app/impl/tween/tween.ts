@@ -374,7 +374,7 @@ export namespace tween {
 		}
 		
 		public update(time) {
-			if (this.sequence.update(time)) {
+			if (this.sequence && this.sequence.update(time)) {
 				this.cancel()
 			}
 		}
