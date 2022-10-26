@@ -27,6 +27,8 @@ export abstract class AbstractVolumeable implements Volumeable {
 	public smoothVolume(duration: number, volume: number)
 	public smoothVolume(duration: number, from: number, to: number)
 	public smoothVolume(duration: number, from: number, to?: number): Promise<void> {
+		if (!this.tweener) return
+		
 		this._smoothTween.cancel()
 		
 		if (isNullable(to)) {
