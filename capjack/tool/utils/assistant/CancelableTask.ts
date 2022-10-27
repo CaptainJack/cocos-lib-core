@@ -3,14 +3,17 @@ import {Cancelable} from '../Cancelable'
 export class CancelableTask implements Cancelable {
 	private _canceled = false
 	
-	constructor(private readonly task: () => void) {}
+	constructor(private task: () => void) {}
 	
 	protected get canceled(): boolean {
 		return this._canceled
 	}
 	
 	cancel() {
-		this._canceled = true
+		if (!this._canceled) {
+			this._canceled = true
+			this.task = null
+		}
 	}
 	
 	invoke() {

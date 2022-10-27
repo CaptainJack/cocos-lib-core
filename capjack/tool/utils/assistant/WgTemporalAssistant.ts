@@ -28,7 +28,7 @@ abstract class TemporalTask extends CancelableTask {
 	
 	protected constructor(
 		task: () => void,
-		protected readonly wg: WindowOrWorkerGlobalScope
+		protected wg: WindowOrWorkerGlobalScope
 	) {
 		super(task)
 	}
@@ -37,6 +37,7 @@ abstract class TemporalTask extends CancelableTask {
 		if (!this.canceled) {
 			super.cancel()
 			this.stop()
+			this.wg = null
 		}
 	}
 	
