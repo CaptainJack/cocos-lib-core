@@ -22,7 +22,7 @@ export function initAnb(config: AnalyticsBrokerConfig): Promise<void> {
 		}
 	}
 	else {
-		if (window['devtodev']) {
+		if (window['devtodev'] && window['devtodevAppId'] != '{DTD}') {
 			broker = new BrowserAnalyticsBroker()
 		}
 		else {
