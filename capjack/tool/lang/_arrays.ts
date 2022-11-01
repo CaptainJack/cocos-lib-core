@@ -146,4 +146,34 @@ export namespace _array {
 		for (let i = from; i < to; i++) a.push(i)
 		return a
 	}
+	
+	export function max(collection: Array<number>, predicate?: (element: number) => boolean): number | null {
+		if (isEmpty(collection)) return null
+		
+		if (predicate) {
+			return max(collection.filter(predicate))
+		}
+		
+		let r = collection[0]
+		for (const v of collection) {
+			if (v > r) r = v
+		}
+		
+		return r
+	}
+	
+	export function min(collection: Array<number>, predicate?: (element: number) => boolean): number | null {
+		if (isEmpty(collection)) return null
+		
+		if (predicate) {
+			return min(collection.filter(predicate))
+		}
+		
+		let r = collection[0]
+		for (const v of collection) {
+			if (v < r) r = v
+		}
+		
+		return r
+	}
 }
