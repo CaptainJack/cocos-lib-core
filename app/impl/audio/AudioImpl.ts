@@ -39,6 +39,7 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		if (isString(clip)) {
 			name = clip
 			clip  = this.extractClip(name)
+			if (clip == null) return DummySound.INSTANCE
 		}
 		else {
 			name = clip.name
