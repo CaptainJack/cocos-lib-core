@@ -8,6 +8,8 @@ export const SKELETON_EMPTY_ATTACHMENT = sys.isNative ? '' : null
 declare module 'cc' {
 	
 	interface Extension {
+		getParentComponent<T extends Component>(type: Class<T>): T
+		
 		getChildComponent<T extends Component>(path: string, type: Class<T>): T
 		
 		getChild(path: string): Node
@@ -44,6 +46,17 @@ Node.prototype.addChildWithKeepPosition = function (child: Node) {
 	const position = child.worldPosition.clone()
 	this.addChild(child)
 	child.setWorldPosition(position)
+}
+
+Node.prototype.getParentComponent = function <T extends Component>(type: Class<T>): T {
+	let p: Node = this.parent
+	while (p) {
+		// @ts-ignore
+		let c = p.getComponent(type)
+		if (c) return c
+		p = p.parent
+	}
+	return null
 }
 
 Node.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
@@ -134,6 +147,10 @@ Node.prototype.setScaleY = function (percent: number) {
 }
 
 ///
+
+Component.prototype.getParentComponent = function <T extends Component>(type: Class<T>): T {
+	return this.node.getParentComponent(type)
+}
 
 Component.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
 	return this.node.getChildComponent(path, type)
