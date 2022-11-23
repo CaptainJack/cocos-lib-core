@@ -34,11 +34,36 @@ export class FadeSoundAdjuster implements SoundAdjuster {
 	}
 	
 	public handleEnd(): void {
-		
 		this.sound = null
 		this.duration = null
 	}
 }
+
+export class FadeStopSoundAdjuster implements SoundAdjuster {
+	constructor(private sound: RealSound, private duration: number) {
+	}
+	
+	public handlePlay(): void {
+	}
+	
+	public handleStart(): void {
+	}
+	
+	public handlePause(): boolean {
+		return false
+	}
+	
+	public handleStop(): boolean {
+		this.sound.smoothVolume(this.duration, 0).then(() => this.sound.doStop())
+		return true
+	}
+	
+	public handleEnd(): void {
+		this.sound = null
+		this.duration = null
+	}
+}
+
 
 export class JumpsSoundAdjuster implements SoundAdjuster {
 	private nextPoint: number = 0

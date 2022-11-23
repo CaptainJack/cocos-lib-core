@@ -26,6 +26,7 @@ export interface Sound extends Volumeable {
 export interface SoundSettings {
 	loop?: boolean
 	smooth?: number
+	smoothStop?: number
 	jumps?: Array<number>,
 }
 
