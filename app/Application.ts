@@ -15,4 +15,6 @@ export interface Application {
 	readonly events: EventChannel<any>
 	readonly audio: Audio
 	readonly bundler: Bundler
+	
+	readonly localization2: Localization
 }

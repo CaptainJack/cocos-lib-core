@@ -17,5 +17,5 @@ export abstract class AbstractLocalization implements Localization {
 	
 	public abstract formatIntegerNumber(value: number | Long): string
 	
-	public abstract formatFractionNumber(value: number | Long, precision: number): string
+	public abstract formatFractionNumber(value: number | Long, precision: number, fixed: boolean): string
 }

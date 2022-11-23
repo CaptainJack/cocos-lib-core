@@ -50,21 +50,36 @@ export namespace _format {
 		return v
 	}
 	
-	export function formatFractionNumber(value: number | Long | string, precision: number, thousandthSeparator: string, fractionSeparator: string): string {
+	export function formatFractionNumber(value: number | Long | string, precision: number, fixed: boolean, thousandthSeparator: string, fractionSeparator: string): string {
 		if (value instanceof Long) {
-			return formatIntegerNumber(value, ' ') + fractionSeparator + '0'.repeat(precision)
+			const s = formatIntegerNumber(value, thousandthSeparator)
+			if (fixed) {
+				return s + fractionSeparator + '0'.repeat(precision)
+			}
+			return s
 		}
 		if (isString(value)) {
 			return value
 		}
 		
-		const v = value.toFixed(precision)
-		if (precision == 0) {
-			return formatIntegerNumber(v, thousandthSeparator)
+		if (fixed) {
+			const v = value.toFixed(precision)
+			if (precision == 0) {
+				return formatIntegerNumber(v, thousandthSeparator)
+			}
+			const i = v.indexOf('.')
+			return formatIntegerNumber(v.substring(0, i), thousandthSeparator) + fractionSeparator + v.substring(i + 1)
 		}
-		const i = v.indexOf('.')
-		return formatIntegerNumber(v.substring(0, i), thousandthSeparator) + fractionSeparator + v.substring(i + 1)
 		
+		let v = value.toString()
+		let s1 = _string.substringBefore(v, '.')
+		let s2 = _string.substringAfter(v, '.', null)
+		
+		if (precision == 0 || s2 === null) {
+			return s1
+		}
+		
+		return formatIntegerNumber(s1, thousandthSeparator) + fractionSeparator + s2
 	}
 	
 	export function defineWordDeclinationRu(number: number, word1: string, word2: string, word5: string): string {

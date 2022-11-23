@@ -14,13 +14,11 @@ export class Localization_RU extends AbstractLocalization {
 	public formatPriceValue(value: number, currency: string): string {
 		switch (currency) {
 			case 'RUB':
-				return this.formatFractionNumber(value, 0)
 			case 'OK':
-				return this.formatIntegerNumber(value)
 			case 'VK':
 				return this.formatIntegerNumber(value)
 			default:
-				return this.formatFractionNumber(value, 2)
+				return this.formatFractionNumber(value, 2, true)
 		}
 	}
 	
@@ -59,8 +57,8 @@ export class Localization_RU extends AbstractLocalization {
 		return _format.formatIntegerNumber(value, this.config.thousandthSeparator)
 	}
 	
-	public formatFractionNumber(value: number | Long, precision: number): string {
-		return _format.formatFractionNumber(value, precision, this.config.thousandthSeparator, this.config.fractionSeparator)
+	public formatFractionNumber(value: number | Long, precision: number, fixed: boolean): string {
+		return _format.formatFractionNumber(value, precision, fixed, this.config.thousandthSeparator, this.config.fractionSeparator)
 	}
 }
 
