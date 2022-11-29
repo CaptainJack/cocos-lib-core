@@ -67,9 +67,11 @@ export class Wrapper extends NormalizedComponent {
 		const size = new Vec2(0, 0)
 		
 		for (const target of this._targets) {
-			let t = target.getComponent(UITransform)
-			size.x = Math.max(t.width, size.x)
-			size.y = Math.max(t.height, size.y)
+			if (target.activeInHierarchy) {
+				let t = target.getComponent(UITransform)
+				size.x = Math.max(t.width, size.x)
+				size.y = Math.max(t.height, size.y)
+			}
 		}
 		
 		let t = this.getComponent(UITransform)
