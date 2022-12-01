@@ -20,7 +20,6 @@ export class ApplicationImpl implements Application {
 	public readonly tweener: tween.TweenerImpl
 	public readonly storage: SystemLocalStorage
 	public readonly localization: Localization
-	public readonly localization2: Localization
 	public readonly events: WorkerEventChannel<any>
 	public readonly audio: Audio
 	public readonly bundler: Bundler
@@ -37,8 +36,6 @@ export class ApplicationImpl implements Application {
 		this.events = new WorkerEventChannel(this.assistant, e => this.handleError(e))
 		this.audio = new AudioImpl(scene.node, this.tweener)
 		this.bundler = new BundlerImpl({}, this.assistant, e => this.handleError(e))
-		
-		this.localization2 = new Localization_RU(new LocalizationConfig(' ', ','))
 		
 		window.addEventListener('error', () => this.stop())
 		

@@ -371,6 +371,10 @@ export class Long {
 		return this.minus(this.div(other).multiply(other));
 	}
 	
+	moduloNumber(other: number): Long {
+		return this.minus(this.divNumber(other).multiplyNumber(other));
+	}
+	
 	not(): Long {
 		return Long.fromBits(~this.low, ~this.high);
 	}
