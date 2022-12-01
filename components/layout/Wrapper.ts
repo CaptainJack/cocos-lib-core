@@ -22,13 +22,19 @@ export class Wrapper extends NormalizedComponent {
 	
 	public set targets(value: Array<Node>) {
 		for (const target of this._targets) {
-			if (target) target.off(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+			if (target) {
+				target.off(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+				target.off(NodeEventType.ACTIVE_IN_HIERARCHY_CHANGED, this.updateWrap, this)
+			}
 		}
 		
 		this._targets = value
 		
 		for (const target of this._targets) {
-			if (target) target.on(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+			if (target) {
+				target.on(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+				target.on(NodeEventType.ACTIVE_IN_HIERARCHY_CHANGED, this.updateWrap, this)
+			}
 		}
 	}
 	
@@ -60,6 +66,8 @@ export class Wrapper extends NormalizedComponent {
 		for (const target of this._targets) {
 			target.off(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
 			target.on(NodeEventType.SIZE_CHANGED, this.updateWrap, this)
+			target.off(NodeEventType.ACTIVE_IN_HIERARCHY_CHANGED, this.updateWrap, this)
+			target.on(NodeEventType.ACTIVE_IN_HIERARCHY_CHANGED, this.updateWrap, this)
 		}
 	}
 	
