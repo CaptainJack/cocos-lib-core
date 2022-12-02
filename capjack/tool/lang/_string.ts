@@ -1,7 +1,55 @@
 import {_byte} from './_byte'
-import {best, isString} from './_utils'
+import {best, isNullable, isString} from './_utils'
 
 export namespace _string {
+	
+	export function trimStart(value: string, chars?: string) {
+		if (isNullable(chars)) {
+			while (true) {
+				if (isWhitespaceChar(value.charAt(0))) {
+					value = value.substring(1)
+				}
+				else {
+					break
+				}
+			}
+		}
+		
+		while (true) {
+			if (contains(chars, value.charAt(0))) {
+				value = value.substring(1)
+			}
+			else {
+				break
+			}
+		}
+		
+		return value
+	}
+	
+	export function trimEnd(value: string, chars?: string) {
+		if (isNullable(chars)) {
+			while (true) {
+				if (isWhitespaceChar(value.charAt(value.length - 1))) {
+					value = value.substring(0, value.length - 1)
+				}
+				else {
+					break
+				}
+			}
+		}
+		
+		while (true) {
+			if (contains(chars, value.charAt(value.length - 1))) {
+				value = value.substring(0, value.length - 1)
+			}
+			else {
+				break
+			}
+		}
+		
+		return value
+	}
 	
 	export function isWhitespaceChar(c: string): boolean {
 		return c === ' '
