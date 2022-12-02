@@ -126,8 +126,10 @@ export class RealSound extends AbstractVolumeable implements Sound {
 		if (this.source) {
 			this.played = false
 			
-			this.source.node.targetOff(AudioSource.EventType.STARTED)
-			this.source.node.targetOff(AudioSource.EventType.ENDED)
+			if (this.source.node) {
+				this.source.node.targetOff(AudioSource.EventType.STARTED)
+				this.source.node.targetOff(AudioSource.EventType.ENDED)
+			}
 			
 			if (this.adjusters) {
 				for (const adjuster of this.adjusters) {
