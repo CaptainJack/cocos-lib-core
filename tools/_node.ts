@@ -37,6 +37,8 @@ declare module 'cc' {
 	
 	interface Node extends Extension {
 		addChildWithKeepPosition(child: Node)
+		
+		destroyChild(path: string): boolean
 	}
 	
 	interface Component extends Extension {}
@@ -57,6 +59,15 @@ Node.prototype.getParentComponent = function <T extends Component>(type: Class<T
 		p = p.parent
 	}
 	return null
+}
+
+Node.prototype.destroyChild = function (path: string): boolean {
+	const child = this.getChild(path)
+	if (child) {
+		child.destroy()
+		return true
+	}
+	return false
 }
 
 Node.prototype.getChildComponent = function <T extends Component>(path: string, type: Class<T>): T {
