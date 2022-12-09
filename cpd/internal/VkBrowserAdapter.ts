@@ -4,6 +4,7 @@ import {Exception} from '../../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
 import {_random} from '../../tools/_random'
+import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
 
 export class VkBrowserAdapter extends AbstractBrowserAdapter {
 	public readonly purchaseAvailable: boolean = true
@@ -31,11 +32,11 @@ export class VkBrowserAdapter extends AbstractBrowserAdapter {
 		receiver('VK', [])
 	}
 	
-	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string) => void, onFail: (reason: string) => void): void {
+	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void{
 		vkBridge.send('VKWebAppShowOrderBox', {type: 'item', item: product.id})
 		.then(d => {
 			if (d.success) {
-				onSuccess(`VK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
+				onSuccess(`VK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
 			}
 			else {
 				onFail('failure')

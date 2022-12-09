@@ -15,7 +15,7 @@ export abstract class AbstractAdapter implements CpdAdapter {
 	
 	public abstract loadShop(ids: string[], receiver: (currency: string, products: Array<{id: string; price: number}>) => void): void
 	
-	public abstract purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string) => void, onFail: (reason: string) => void): void
+	public abstract purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void
 	
 	protected abstract getDeviceId(): Promise<string>
 	

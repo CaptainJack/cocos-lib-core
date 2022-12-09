@@ -12,7 +12,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 	
 	private readonly _userId: string
 	
-	private _onPurchaseSuccess: (orderId: string, receipt: string) => void = EMPTY_FUNCTION
+	private _onPurchaseSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void = EMPTY_FUNCTION
 	private _onPurchaseFail: (reason: string) => void = EMPTY_FUNCTION
 	
 	constructor(storage: LocalStorage, userId: string) {
@@ -24,7 +24,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 			
 			if (method == 'showPayment') {
 				if (result == 'ok') {
-					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null)
+					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
 				}
 				else {
 					this._onPurchaseFail(data)
@@ -57,7 +57,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 		receiver('OK', [])
 	}
 	
-	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string) => void, onFail: (reason: string) => void): void {
+	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void{
 		this._onPurchaseSuccess = onSuccess
 		this._onPurchaseFail = onFail
 		FAPI.UI.showPayment(

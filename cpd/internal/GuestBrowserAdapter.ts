@@ -1,6 +1,7 @@
 import {AbstractBrowserAdapter} from './AbstractBrowserAdapter'
 import {CpdAccount} from '../CpdAccount'
 import {_random} from '../../tools/_random'
+import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
 
 export class GuestBrowserAdapter extends AbstractBrowserAdapter {
 	
@@ -20,9 +21,9 @@ export class GuestBrowserAdapter extends AbstractBrowserAdapter {
 		receiver(null, [])
 	}
 	
-	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string) => void, onFail: (reason: string) => void): void {
+	purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void {
 		if (app.debug) {
-			onSuccess(`TEST-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, 'TEST')
+			onSuccess(`TEST-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, 'TEST', EMPTY_FUNCTION)
 		}
 		else {
 			onFail('NOT_AVAILABLE')

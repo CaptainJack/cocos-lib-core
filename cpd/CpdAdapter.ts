@@ -7,7 +7,7 @@ export interface CpdAdapter {
 	
 	purchase(
 		product: {id: string, name: string, price: number},
-		onSuccess: (orderId: string, receipt: string) => void,
+		onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void,
 		onFail: (reason: string) => void
 	): void
 }

@@ -7,6 +7,7 @@ import {Exception} from '../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../capjack/tool/lang/_errors'
 import {OkBrowserAdapter} from './internal/OkBrowserAdapter'
 import {VkBrowserAdapter} from './internal/VkBrowserAdapter'
+import {YandexBrowserAdapter} from './internal/YandexBrowserAdapter'
 
 export function initCpd(storage: LocalStorage): Promise<CpdAdapter> {
 	return sys.isNative ? factoryNative() : factoryBrowser(storage)
@@ -27,6 +28,11 @@ function factoryBrowser(storage: LocalStorage): Promise<CpdAdapter> {
 	// VK
 	if (!!urp['api_url'] && !!urp['api_id'] && !!urp['viewer_id']) {
 		return factoryBrowserVk(storage, urp)
+	}
+	
+	// YANDEX
+	if (window.location.hash.indexOf('yandex') > 0) {
+		return factoryBrowserYandex(storage)
 	}
 	
 	return factoryBrowserGuest(storage)
@@ -73,6 +79,28 @@ function factoryBrowserVk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
 						}
 					})
 					.catch(e => reject(new Exception('Failed to init CPD VK', extractError(e))))
+			}
+		})
+	})
+}
+
+function factoryBrowserYandex(storage: LocalStorage): Promise<CpdAdapter> {
+	return new Promise((resolve, reject) => {
+		assetManager.downloader.downloadScript('//yandex.ru/games/sdk/v2', {scriptAsyncLoading: true}, error => {
+			if (error) {
+				reject(new Exception('Failed to load CPD YANDEX', error))
+			}
+			else {
+				YaGames.init({
+						screen: {
+							orientation: {
+								value: YaGames.deviceInfo.isMobile() ? 'portrait' : 'landscape',
+								lock: true
+							}
+						}
+					})
+					.then(ysdk => resolve(new YandexBrowserAdapter(storage, ysdk)))
+					.catch(e => reject(new Exception('Failed to init CPD YANDEX', extractError(e))))
 			}
 		})
 	})

@@ -23,7 +23,7 @@ export abstract class BaseAnalyticsBroker implements InternalAnalyticsBroker {
 	protected abstract doRealPayment(orderId: string, productId: string, price: number, currency: string)
 	
 	private normaliseRealCurrency(currency: string): string {
-		if (currency == 'OK' || currency == 'VK') {
+		if (currency == 'OK' || currency == 'VK' || currency == 'YAN') {
 			return 'RUB'
 		}
 		return currency
