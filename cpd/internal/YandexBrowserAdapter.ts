@@ -21,11 +21,26 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 		})
 	}
 	
-	public loadShop(ids: string[], receiver: (currency: string, products: Array<{id: string; price: number}>) => void): void {
+	public loadShop(ids: string[],
+		receiver: (currency: string, products: Array<{id: string; price: number}>) => void,
+		purchaseConsumer: (productId: string, orderId: string, receipt: string, successConsumer: () => void) => void
+	): void {
 		
 		this.ysdk.getPayments({signed: true}).then(payments => {
 			this.payments = payments
+			
 			receiver('YAN', [])
+			
+			payments.getPurchases().then(purchases => {
+				if (purchases.length > 0) {
+					// @ts-ignore
+					purchaseConsumer(null, null, purchases.signature, () => {
+						purchases.forEach(p => {
+							payments.consumePurchase(p.purchaseToken)
+						});
+					})
+				}
+			})
 		}).catch(e => {
 			throw new Exception('Payments is not available', extractError(e))
 		})

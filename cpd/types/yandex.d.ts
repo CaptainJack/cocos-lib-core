@@ -18,6 +18,8 @@ declare class YaPayments {
 	public purchase(params: {id: string; developerPayload?: string}): Promise<YaPurchase>
 	
 	public consumePurchase(purchaseToken: string)
+	
+	public getPurchases(): Promise<Array<YaPurchase>>
 }
 
 declare class YaPurchase {
