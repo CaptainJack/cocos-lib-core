@@ -67,6 +67,11 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 				else {
 					this._userId = player.getUniqueID()
 					
+					const element = document.getElementById("app-user-id")
+					if (element) {
+						element.innerText = `YA${this._userId}`
+					}
+					
 					resolve(new CpdAccount(
 						this.makeCsiAuthKeyPrefix() + this._userId,
 						player.getName(),
