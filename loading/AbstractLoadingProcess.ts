@@ -33,7 +33,11 @@ export abstract class AbstractLoadingProcess implements LoadingProcess {
 				handler.apply(null, args)
 			}
 		})
+		
+		this.clearOnComplete()
 	}
 	
 	protected abstract calcProgress(): number
+	
+	protected clearOnComplete() {}
 }
