@@ -33,6 +33,7 @@ export abstract class AbstractVolumeable implements Volumeable {
 		
 		if (isNullable(to)) {
 			to = from
+			from = this._volume
 		}
 		else {
 			this._volume = from
