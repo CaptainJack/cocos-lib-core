@@ -54,6 +54,10 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 			.catch(() => onFail('failure'))
 	}
 	
+	public getAppFriends(): Promise<Array<string>> {
+		return Promise.resolve([])
+	}
+	
 	protected makeCsiAuthKeyPrefix(): string {
 		return 'ya' + super.makeCsiAuthKeyPrefix()
 	}

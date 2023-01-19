@@ -30,6 +30,10 @@ export class GuestBrowserAdapter extends AbstractBrowserAdapter {
 		}
 	}
 	
+	public getAppFriends(): Promise<Array<string>> {
+		return Promise.resolve([])
+	}
+	
 	protected makeCsiAuthKeyPrefix(): string {
 		return 'gu' + super.makeCsiAuthKeyPrefix()
 	}

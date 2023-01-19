@@ -20,6 +20,8 @@ export abstract class AbstractAdapter implements CpdAdapter {
 	
 	public abstract purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void
 	
+	public abstract getAppFriends(): Promise<Array<string>>
+	
 	protected abstract getDeviceId(): Promise<string>
 	
 	protected abstract makeCsiAuthKeyPrefix(): string

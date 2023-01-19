@@ -13,4 +13,6 @@ export interface CpdAdapter {
 		onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void,
 		onFail: (reason: string) => void
 	): void
+	
+	getAppFriends(): Promise<Array<string>>
 }

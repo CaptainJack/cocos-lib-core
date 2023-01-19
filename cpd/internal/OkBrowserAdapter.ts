@@ -72,6 +72,19 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 		)
 	}
 	
+	public getAppFriends(): Promise<Array<string>> {
+		return new Promise((resolve, reject) => {
+			FAPI.Client.call({'method': 'friends.getAppUsers'}, (status, data, error) => {
+				if (error) {
+					reject(new Exception('Failed call friends.getAppUsers', extractError(error)))
+				}
+				else {
+					resolve(data['uids'])
+				}
+			})
+		})
+	}
+	
 	protected makeCsiAuthKeyPrefix(): string {
 		return 'ok' + super.makeCsiAuthKeyPrefix()
 	}
