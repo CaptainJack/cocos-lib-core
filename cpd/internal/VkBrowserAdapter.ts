@@ -4,15 +4,17 @@ import {Exception} from '../../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
 import {_random} from '../../tools/_random'
-import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
+import {EMPTY_FUNCTION, isNullable} from '../../capjack/tool/lang/_utils'
 
 export class VkBrowserAdapter extends AbstractBrowserAdapter {
 	public readonly purchaseAvailable: boolean = true
 	
+	private readonly _appId: string
 	private readonly _userId: string
 	
-	constructor(storage: LocalStorage, userId: string) {
+	constructor(storage: LocalStorage, appId: string, userId: string) {
 		super(storage)
+		this._appId = appId
 		this._userId = userId
 	}
 	
@@ -48,7 +50,23 @@ export class VkBrowserAdapter extends AbstractBrowserAdapter {
 	}
 	
 	public getAppFriends(): Promise<Array<string>> {
-		return Promise.resolve([])
+		return new Promise((resolve, reject) => {
+			vkBridge.send('VKWebAppGetAuthToken', {app_id: this._appId, scope: 'friends'}).then(d => {
+				if (d.access_token) {
+					vkBridge.send('VKWebAppCallAPIMethod', {method: 'friends.getAppUsers', params: {v: '5.131', access_token: d.access_token}}).then(d => {
+						if (isNullable(d.response)) {
+							reject(new Exception('Failed call friends.getAppUsers', extractError(JSON.stringify(d))))
+						}
+						else {
+							resolve(d.response.map(v => v.toString()))
+						}
+					})
+				}
+				else {
+					reject(new Exception('Failed call VKWebAppGetAuthToken', extractError(JSON.stringify(d))))
+				}
+			})
+		})
 	}
 	
 	

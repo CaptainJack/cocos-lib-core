@@ -72,7 +72,7 @@ function factoryBrowserVk(storage: LocalStorage, urp: {}): Promise<CpdAdapter> {
 				vkBridge.send('VKWebAppInit')
 					.then(d => {
 						if (d.result) {
-							resolve(new VkBrowserAdapter(storage, urp['viewer_id']))
+							resolve(new VkBrowserAdapter(storage, urp['api_id'], urp['viewer_id']))
 						}
 						else {
 							reject(new Exception('Failed to init CPD VK'))

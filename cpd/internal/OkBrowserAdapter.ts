@@ -79,7 +79,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 					reject(new Exception('Failed call friends.getAppUsers', extractError(error)))
 				}
 				else {
-					resolve(data['uids'])
+					resolve(data['uids'].map(v => v.toString()))
 				}
 			})
 		})
