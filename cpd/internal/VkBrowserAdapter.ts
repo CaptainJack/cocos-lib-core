@@ -9,12 +9,12 @@ import {EMPTY_FUNCTION, isNullable} from '../../capjack/tool/lang/_utils'
 export class VkBrowserAdapter extends AbstractBrowserAdapter {
 	public readonly purchaseAvailable: boolean = true
 	
-	private readonly _appId: string
+	private readonly _appId: number
 	private readonly _userId: string
 	
 	constructor(storage: LocalStorage, appId: string, userId: string) {
 		super(storage)
-		this._appId = appId
+		this._appId = parseInt(appId)
 		this._userId = userId
 	}
 	
