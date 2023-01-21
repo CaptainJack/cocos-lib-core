@@ -39,9 +39,15 @@ export abstract class BaseApiConnection<IA extends BaseInnerApi> implements Base
 					const subscriptionId = reader.readInt()
 					const argumentId = reader.readInt()
 					const subscription = this.context.innerSubscriptions.get(subscriptionId)
-					const success = subscription != null && subscription.call(argumentId, reader)
-					if (!success) {
-						throw new ProtocolBrokenException(`Calling an unknown subscription ${subscriptionId}.${argumentId}`)
+					if (subscription === null) {
+						message.skipReadFully()
+						this.context.logger.warn(`Calling an unknown subscription ${subscriptionId}.${argumentId}`)
+					}
+					else {
+						const success = subscription.call(argumentId, reader)
+						if (!success) {
+							throw new ProtocolBrokenException(`Calling an unknown subscription ${subscriptionId}.${argumentId}`)
+						}
 					}
 					break
 				}
