@@ -70,7 +70,9 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	}
 	
 	public releaseSound(sound: RealSound) {
-		this._sounds.delete(sound)
+		if (this._sounds) {
+			this._sounds.delete(sound)
+		}
 		this.releaseSource(sound.source)
 	}
 	
