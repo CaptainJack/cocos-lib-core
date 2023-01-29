@@ -14,6 +14,10 @@ declare module 'cc' {
 		
 		getChild(path: string): Node
 		
+		getChildDeep(path: string): Node
+		
+		getChildComponentDeep<T extends Component>(path: string, type: Class<T>): T
+		
 		setOpacity(percent: number)
 		
 		setScaleFully(percent: number)
@@ -99,6 +103,42 @@ Node.prototype.getChild = function (path: string): Node {
 	return null
 }
 
+Node.prototype.getChildDeep = function (path: string): Node {
+	let i = path.indexOf('/')
+	if (i > 0) {
+		const n = this.getChildDeep(path.substring(0, i))
+		if (n) {
+			return n.getChildDeep(path.substring(i + 1))
+		}
+	}
+	else {
+		return getChildDeep(this, path)
+	}
+	
+	return null
+}
+
+function getChildDeep(node: Node, name: string):Node {
+	let c = node.getChildByName(name)
+	if (c) {
+		return c
+	}
+	
+	for (c of node.children) {
+		c = getChildDeep(c, name)
+		if (c) {
+			return c
+		}
+	}
+	
+	return null
+}
+
+Node.prototype.getChildComponentDeep = function <T extends Component>(path: string, type: Class<T>): T {
+	const node = this.getChildDeep(path)
+	return node ? node.getComponent(type) : null
+}
+
 Node.prototype.setOpacity = function (percent: number) {
 	require(percent >= 0 && percent <= 1)
 	
@@ -169,6 +209,14 @@ Component.prototype.getChildComponent = function <T extends Component>(path: str
 
 Component.prototype.getChild = function(path: string): Node {
 	return this.node.getChild(path)
+}
+
+Component.prototype.getChildDeep = function(path: string): Node {
+	return this.node.getChildDeep(path)
+}
+
+Component.prototype.getChildComponentDeep = function <T extends Component>(path: string, type: Class<T>): T {
+	return this.node.getChildComponentDeep(path, type)
 }
 
 Component.prototype.setOpacity = function (percent: number) {

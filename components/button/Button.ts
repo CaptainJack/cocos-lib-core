@@ -212,7 +212,7 @@ export class Button extends NormalizedComponent {
 			this._pressed = false
 			this.updateState()
 			this.stopHold()
-			this.executePress()
+			this.executePress0()
 		}
 	}
 	
@@ -266,7 +266,7 @@ export class Button extends NormalizedComponent {
 			this._pressed = false
 			this.updateState()
 			this.stopHold()
-			this.executePress()
+			this.executePress0()
 		}
 	}
 	
@@ -275,7 +275,7 @@ export class Button extends NormalizedComponent {
 			this._pressed = false
 			this.updateState()
 			this.stopHold()
-			this.executeHold()
+			this.executeHold0()
 		}
 	}
 	
@@ -312,6 +312,24 @@ export class Button extends NormalizedComponent {
 	private stopHold() {
 		this._holdTask.cancel()
 		this._holdTask = Cancelable.DUMMY
+	}
+	
+	private executePress0() {
+		try {
+			this.executePress()
+		}
+		catch (e) {
+			scene.catchError(e)
+		}
+	}
+	
+	private executeHold0() {
+		try {
+			this.executeHold()
+		}
+		catch (e) {
+			scene.catchError(e)
+		}
 	}
 }
 

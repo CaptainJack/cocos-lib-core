@@ -176,4 +176,22 @@ export namespace _array {
 		
 		return r
 	}
+	
+	export function associateBy<T, K>(collection: ArrayLike<T>, keySelector: (element: T) => K): Map<K, T> {
+		let map = new Map<K, T>()
+		for (let i = 0, l = collection.length; i < l; i++) {
+			let e = collection[i]
+			map.set(keySelector(e), e)
+		}
+		return map
+	}
+	
+	export function associateWith<K, V>(collection: ArrayLike<K>, valueSelector: (element: K) => V): Map<K, V> {
+		let map = new Map<K, V>()
+		for (let i = 0, l = collection.length; i < l; i++) {
+			let e = collection[i]
+			map.set(e, valueSelector(e))
+		}
+		return map
+	}
 }

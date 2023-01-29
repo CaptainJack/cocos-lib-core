@@ -111,7 +111,7 @@ export namespace _string {
 	
 	export function padEnd(value: string, length: number, char: string): string {
 		if (value.length >= length) return value
-		return value + repeat(char, value.length - length)
+		return value + repeat(char, length - value.length)
 	}
 	
 	export function repeat(value: string, length: number): string {

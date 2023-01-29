@@ -1,11 +1,15 @@
 import {ClearableEventChannel} from './ClearableEventChannel'
 import {EventReceivers} from './EventReceivers'
 import {Class} from '../capjack/tool/lang/_types'
-import {isString, requireNotNullable} from '../capjack/tool/lang/_utils'
+import {requireNotNullable} from '../capjack/tool/lang/_utils'
 import {Cancelable} from '../capjack/tool/utils/Cancelable'
+import {extractError} from '../capjack/tool/lang/_errors'
+import {Logging} from '../capjack/tool/logging/Logging'
 
 export class DirectEventChannel<E> implements ClearableEventChannel<E> {
 	private _receiversMap = new Map<Class<E> | E, EventReceivers>()
+	
+	constructor(private errorHandler?: (e: Error) => void) {}
 	
 	clear() {
 		this._receiversMap.forEach((receivers) => receivers.clear())
@@ -14,11 +18,16 @@ export class DirectEventChannel<E> implements ClearableEventChannel<E> {
 	emit(event: E) {
 		requireNotNullable(event)
 		
-		this._receiversMap.forEach((receivers, t) => {
-			if (event === t || (t instanceof Function && event instanceof t)) {
-				receivers.dispatch(event)
+		try {
+			for (const [t, receivers] of this._receiversMap) {
+				if (event === t || (t instanceof Function && event instanceof t)) {
+					receivers.dispatch(event)
+				}
 			}
-		})
+		}
+		catch (e) {
+			this.catchError(e)
+		}
 	}
 	
 	on<T extends E>(type: Class<T>, receiver: (event: T) => void, target?: any): Cancelable
@@ -52,5 +61,16 @@ export class DirectEventChannel<E> implements ClearableEventChannel<E> {
 			receiver(e)
 		})
 		return cancelable
+	}
+	
+	private catchError(error: any) {
+		error = extractError(error)
+		
+		if (this.errorHandler) {
+			this.errorHandler(error)
+		}
+		else {
+			Logging.getLogger('DirectEventChannel').error('Uncaught error', error)
+		}
 	}
 }
