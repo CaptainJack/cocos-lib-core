@@ -6,7 +6,8 @@ import {tween_common as _tc} from './tween-common'
 import {Cancelable} from '../../../capjack/tool/utils/Cancelable'
 import {extractError} from '../../../capjack/tool/lang/_errors'
 import {Logging} from '../../../capjack/tool/logging/Logging'
-import {isNullable, isNumber, require} from '../../../capjack/tool/lang/_utils'
+import {isFunction, isNullable, require} from '../../../capjack/tool/lang/_utils'
+import {Long} from '../../../capjack/tool/lang/Long'
 
 export namespace tween {
 	
@@ -214,15 +215,24 @@ export namespace tween {
 		
 		public update(duration: number, fn: (p: number) => void, easing?: TweenEasing): this
 		public update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): this
-		public update(duration: number, from: ((p: number) => void) | number, to?: TweenEasing | number, fn?: (v: number) => void, easing?: TweenEasing): this {
+		public update(duration: number, from: Long, to: Long, fn: (v: Long) => void, easing?: TweenEasing): this
+		public update(duration: number, from: ((p: number) => void) | number | Long, to?: TweenEasing | number | Long, fn?: ((v: number) => void) | ((v: Long) => void), easing?: TweenEasing): this {
 			require(duration >= 0)
-			if (!isNumber(from)) {
+			
+			if (from instanceof Long) {
+				// @ts-ignore
+				return this.add(new _ta.UpdateLongAction(from, to, duration, fn, easingFromType(isNullable(easing) ? TweenEasing.linear : easing)))
+			}
+			
+			if (isFunction(from)) {
 				fn = from
+				// @ts-ignore
 				easing = to
 				from = 0
 				to = 1
 			}
 			
+			// @ts-ignore
 			return this.add(new _ta.UpdateAction(from, to, duration, fn, easingFromType(isNullable(easing) ? TweenEasing.linear : easing)))
 		}
 		
@@ -410,7 +420,7 @@ export namespace tween {
 			return this
 		}
 		
-		public update(duration: number, from: ((p: number) => void) | number, to?: TweenEasing | number, fn?: (v: number) => void, easing?: TweenEasing): this {
+		public update(duration: number, from: any, to?: any, fn?: any, easing?: TweenEasing): this {
 			return undefined
 		}
 		

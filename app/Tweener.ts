@@ -1,6 +1,7 @@
 import {Node} from 'cc'
 import {Cancelable} from '../capjack/tool/utils/Cancelable'
 import {BezierCurve} from '../tools/BezierCurve'
+import {Long} from '../capjack/tool/lang/Long'
 
 export interface Tweener {
 	tween(): Tween
@@ -34,6 +35,8 @@ export interface TweenBase {
 	update(duration: number, fn: (p: number) => void, easing?: TweenEasing): this
 	
 	update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): this
+	
+	update(duration: number, from: Long, to: Long, fn: (v: Long) => void, easing?: TweenEasing): this
 }
 
 
@@ -60,6 +63,8 @@ export interface NodeTweenParameters extends TweenParameters {
 	scale?: TweenParameter<number>
 	scaleX?: TweenParameter<number>
 	scaleY?: TweenParameter<number>
+	width?:TweenParameter<number>
+	height?:TweenParameter<number>
 	x?: TweenParameter<number>
 	y?: TweenParameter<number>
 	opacity?: TweenParameter<number>

@@ -1,6 +1,7 @@
 import {Node} from 'cc'
 import {tween_node as _tn} from './tween-node'
 import {tween_common as _tc} from './tween-common'
+import {Long} from '../../../capjack/tool/lang/Long'
 
 export namespace tween_action {
 	
@@ -202,6 +203,43 @@ export namespace tween_action {
 		
 		protected move(k: number) {
 			this.target(this.from + this.delta * k)
+		}
+		
+		protected complete() {
+			super.complete()
+			this.from = null
+			this.to = null
+			this.delta = null
+		}
+	}
+	
+	export class UpdateLongAction extends MotionAction<(p: Long) => void> {
+		private step: Long
+		private delta: Long
+		
+		constructor(private from: Long, private to: Long, duration: number, target: (p: Long) => void, easing: _tc.Easing) {
+			super(duration, target, easing)
+		}
+		
+		public start(): void {
+			this.delta = this.to.minus(this.from)
+			this.step = this.delta.divNumber(this.duration / 16.666  | 0)
+			if (this.step.isZero()) this.step = Long.ONE
+			
+			this.move(0)
+		}
+		
+		public clone(): UpdateLongAction {
+			return new UpdateLongAction(this.from, this.to, this.duration, this.target, this.easing)
+		}
+		
+		protected move(k: number) {
+			if (k == 1) {
+				this.target(this.to)
+			}
+			else {
+				this.target(this.from.plus(this.step.multiplyNumber(this.duration * k / 16.666 | 0)))
+			}
 		}
 		
 		protected complete() {

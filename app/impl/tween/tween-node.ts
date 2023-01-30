@@ -25,6 +25,8 @@ export namespace tween_node {
 		if (parameters.scale !== undefined) motions.push(new Motion_Scale(parameters.scale, parameters.update))
 		if (parameters.scaleX !== undefined) motions.push(new Motion_ScaleX(parameters.scaleX, parameters.update))
 		if (parameters.scaleY !== undefined) motions.push(new Motion_ScaleY(parameters.scaleY, parameters.update))
+		if (parameters.width !== undefined) motions.push(new Motion_Width(parameters.width, parameters.update))
+		if (parameters.height !== undefined) motions.push(new Motion_Height(parameters.height, parameters.update))
 		if (parameters.position !== undefined) {
 			if (parameters.position instanceof BezierCurve) motions.push(new Motion_PositionBezierCurve(parameters.position, parameters.update))
 			else motions.push(new Motion_Position(parameters.position, parameters.update))
@@ -79,7 +81,7 @@ export namespace tween_node {
 		}
 		
 		public complete() {
-			this.set(this.to)
+			this.set(this.modify(1, this.to, this.from, this.to))
 			this.target = null
 			this.from = null
 			this.delta = null
@@ -163,6 +165,34 @@ export namespace tween_node {
 		
 		protected set(value: number) {
 			this.target.setScale(this.target.scale.x, value)
+		}
+	}
+	
+	class Motion_Width extends SingleNumberMotion {
+		public clone(): Motion_Width {
+			return new Motion_Width(this.parameter, this.update)
+		}
+		
+		protected defineFrom(): number {
+			return this.target.getWidth()
+		}
+		
+		protected set(value: number) {
+			this.target.setWidth(value)
+		}
+	}
+	
+	class Motion_Height extends SingleNumberMotion {
+		public clone(): Motion_Height {
+			return new Motion_Height(this.parameter, this.update)
+		}
+		
+		protected defineFrom(): number {
+			return this.target.getHeight()
+		}
+		
+		protected set(value: number) {
+			this.target.setHeight(value)
 		}
 	}
 	
