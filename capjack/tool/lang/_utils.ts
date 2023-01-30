@@ -3,6 +3,9 @@ import {IllegalArgumentException} from './exceptions/IllegalArgumentException'
 
 export const EMPTY_FUNCTION = () => {}
 
+export const EMPTY_FUNCTION_TRUE = () => true
+export const EMPTY_FUNCTION_FALSE = () => false
+
 export function isString(value: any): value is string {
 	const type = typeof value
 	return type === 'string' || (type === 'object' && value != null && !Array.isArray(value) && toString.call(value) == '[object String]')
