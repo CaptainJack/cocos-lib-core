@@ -1,5 +1,4 @@
 import {Stoppable} from './Stoppable'
-import {IllegalStateException} from '../lang/exceptions/IllegalStateException'
 import {isNullable} from '../lang/_utils'
 
 export interface Cancelable {
@@ -36,7 +35,6 @@ class CancelableCode implements Cancelable {
 	}
 }
 
-
 export class CompositeCancelable implements Cancelable {
 	private list: Array<Cancelable>
 	
@@ -45,21 +43,15 @@ export class CompositeCancelable implements Cancelable {
 	}
 	
 	public add(target: Cancelable): this {
-		if (this.list) {
-			this.list.push(target)
-			return this
-		}
-		throw new IllegalStateException()
+		this.list.push(target)
+		return this
 	}
 	
 	public cancel(): void {
-		if (this.list) {
-			for (const cancelable of this.list) {
-				cancelable.cancel()
-			}
-			this.list.length = 0
-			this.list = null
+		for (const cancelable of this.list) {
+			cancelable.cancel()
 		}
+		this.list.length = 0
 	}
 	
 }
