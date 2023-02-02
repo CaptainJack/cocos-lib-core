@@ -158,7 +158,7 @@ export namespace tween_action {
 	abstract class MotionAction<T> implements Action {
 		private time: number = 0
 		
-		public constructor(protected duration: number, protected target: T, protected easing: _tc.Easing) {}
+		protected constructor(protected duration: number, protected target: T, protected easing: _tc.Easing) {}
 		
 		public update(time): boolean {
 			this.time += time

@@ -41,7 +41,7 @@ export class StoppableTemporalAssistantProxy implements TemporalAssistant, Stopp
 			}
 		}
 		return Cancelable.DUMMY
-	}loc
+	}
 	
 	schedule(delayMillis: number, code: () => void): Cancelable {
 		if (this.target) {

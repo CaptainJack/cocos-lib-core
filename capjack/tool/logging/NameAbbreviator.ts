@@ -25,7 +25,7 @@ export class NameAbbreviator {
 		const lengths = new Array<number>(this.dotsLimit + 1);
 		this.computeLengths(name, dots, lengths, dotCount);
 		
-		let result = name.substr(0, lengths[0] - 1);
+		let result = name.substring(0, lengths[0] - 1);
 		
 		for (let i = 0; i <= dotCount; i++) {
 			result += name.substring(dots[i - 1], dots[i - 1] + lengths[i]);

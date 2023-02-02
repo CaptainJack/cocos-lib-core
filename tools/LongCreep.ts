@@ -19,7 +19,7 @@ export class LongCreep {
 	private running: boolean = false
 	private time: number
 	
-	private settings: LongCreepSettings
+	private readonly settings: LongCreepSettings
 	
 	constructor(
 		private updater: (value: Long) => void,

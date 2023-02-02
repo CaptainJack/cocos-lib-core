@@ -1,7 +1,9 @@
 declare namespace YaGames {
 	function init(options: {}): Promise<YaSdk>
 	
-	const deviceInfo: {}
+	const deviceInfo: {
+		isMobile(): boolean
+	}
 }
 
 declare class YaSdk {

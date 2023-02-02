@@ -110,7 +110,7 @@ function extractUrlRequestParameters() {
 	const f = {}
 	let c = window.location.search
 	if (c) {
-		c = c.substr(1)
+		c = c.substring(1)
 		const e = c.split('&')
 		for (let d = 0; d < e.length; d++) {
 			const a = e[d].split('=')

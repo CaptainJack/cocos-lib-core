@@ -36,7 +36,7 @@ class CancelableCode implements Cancelable {
 }
 
 export class CompositeCancelable implements Cancelable {
-	private list: Array<Cancelable>
+	private readonly list: Array<Cancelable>
 	
 	constructor(list?: Array<Cancelable>) {
 		this.list = isNullable(list) ? [] : list
