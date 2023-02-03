@@ -5,11 +5,11 @@ export namespace _map {
 		}
 	}
 	
-	export function joinToString(map: Map<any, any>): string {
+	export function joinToString(map: Map<any, any>, separator: string = ', '): string {
 		let r = []
 		for (const [k, v] of map) {
 			r.push(`${k}: ${v}`)
 		}
-		return `{${r.join(', ')}}`
+		return r.join(separator)
 	}
 }
