@@ -1,5 +1,4 @@
 export namespace tween_common {
-	export type Easing = (k: number) => number
 	
 	export interface Cloneable {
 		clone(): any

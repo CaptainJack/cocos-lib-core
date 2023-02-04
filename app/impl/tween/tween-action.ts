@@ -2,6 +2,7 @@ import {Node} from 'cc'
 import {tween_node as _tn} from './tween-node'
 import {tween_common as _tc} from './tween-common'
 import {Long} from '../../../capjack/tool/lang/Long'
+import {TweenEasing} from '../../Tweener'
 
 export namespace tween_action {
 	
@@ -158,7 +159,7 @@ export namespace tween_action {
 	abstract class MotionAction<T> implements Action {
 		private time: number = 0
 		
-		protected constructor(protected duration: number, protected target: T, protected easing: _tc.Easing) {}
+		protected constructor(protected duration: number, protected target: T, protected easing: TweenEasing) {}
 		
 		public update(time): boolean {
 			this.time += time
@@ -188,7 +189,7 @@ export namespace tween_action {
 	export class UpdateAction extends MotionAction<(p: number) => void> {
 		private delta: number
 		
-		constructor(private from: number, private to: number, duration: number, target: (p: number) => void, easing: _tc.Easing) {
+		constructor(private from: number, private to: number, duration: number, target: (p: number) => void, easing: TweenEasing) {
 			super(duration, target, easing)
 		}
 		
@@ -217,7 +218,7 @@ export namespace tween_action {
 		private step: Long
 		private delta: Long
 		
-		constructor(private from: Long, private to: Long, duration: number, target: (p: Long) => void, easing: _tc.Easing) {
+		constructor(private from: Long, private to: Long, duration: number, target: (p: Long) => void, easing: TweenEasing) {
 			super(duration, target, easing)
 		}
 		
@@ -251,7 +252,7 @@ export namespace tween_action {
 	}
 	
 	export class NodeMotionAction extends MotionAction<Node> {
-		constructor(duration: number, target: Node, easing: _tc.Easing, private motions: Array<_tn.NodeMotion>) {
+		constructor(duration: number, target: Node, easing: TweenEasing, private motions: Array<_tn.NodeMotion>) {
 			super(duration, target, easing)
 		}
 		
@@ -286,7 +287,7 @@ export namespace tween_action {
 	export class ObjectMotionAction extends MotionAction<Object> {
 		private motions = new Map<string, ObjectMotionAction_Motion>()
 		
-		constructor(duration: number, target: Object, easing: _tc.Easing, private keys: Array<string>, private to: Object) {
+		constructor(duration: number, target: Object, easing: TweenEasing, private keys: Array<string>, private to: Object) {
 			super(duration, target, easing)
 		}
 		

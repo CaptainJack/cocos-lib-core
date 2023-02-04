@@ -1,5 +1,5 @@
 import {tween_common as _tc} from './tween-common'
-import {NodeTweenParameters, TweenParameter} from '../../Tweener'
+import {NodeTweenParameters, TweenCalculator, TweenParameter, TweenPosition} from '../../Tweener'
 import {Component, Node, UIOpacity, UIRenderer} from 'cc'
 import {IllegalArgumentException} from '../../../capjack/tool/lang/exceptions/IllegalArgumentException'
 import {EMPTY_FUNCTION, isNullable, isNumber} from '../../../capjack/tool/lang/_utils'
@@ -35,9 +35,7 @@ export namespace tween_node {
 		return motions
 	}
 	
-	function modifyDummy<T>(percent: number, value: T, from: T, to: T): T {
-		return value
-	}
+	
 	
 	abstract class SingleNumberMotion implements NodeMotion {
 		protected target: Node
@@ -45,7 +43,7 @@ export namespace tween_node {
 		private to: number
 		private from: number = null
 		private delta: number
-		private modify: (p: number, current: number, from: number, to: number) => number = modifyDummy
+		private calculate: TweenCalculator<number> = TweenCalculator.direct
 		
 		constructor(protected parameter: TweenParameter<number>, update: (k: number) => void) {
 			if (!isNullable(update)) {
@@ -58,7 +56,7 @@ export namespace tween_node {
 			else {
 				this.to = parameter.to
 				this.from = parameter.from
-				if (!isNullable(parameter.mod)) this.modify = parameter.mod
+				if (!isNullable(parameter.calc)) this.calculate = parameter.calc
 			}
 		}
 		
@@ -75,19 +73,19 @@ export namespace tween_node {
 		}
 		
 		public move(k: number) {
-			const current = this.from + this.delta * k
-			this.set(this.modify(k, current, this.from, this.to))
+			this.set(this.calculate(k, this.from, this.to, this.delta))
 			this.update(k)
 		}
 		
 		public complete() {
-			this.set(this.modify(1, this.to, this.from, this.to))
+			this.move(1)
+			
 			this.target = null
 			this.from = null
 			this.delta = null
 			this.to = null
 			this.parameter = null
-			this.modify = null
+			this.calculate = null
 			this.update = null
 		}
 		
@@ -199,30 +197,30 @@ export namespace tween_node {
 	class Motion_Position implements NodeMotion {
 		protected update: (k: number) => void = EMPTY_FUNCTION
 		private target: Node
-		private to: {x: number, y: number}
-		private from: {x: number, y: number} = null
-		private delta: {x: number, y: number}
-		private modify: (p: number, current: {x: number, y: number}, from: {x: number, y: number}, to: {x: number, y: number}) => {x: number, y: number} = modifyDummy
+		private to: TweenPosition
+		private from: TweenPosition = null
+		private delta: TweenPosition
+		private calculate: TweenCalculator<TweenPosition> = TweenCalculator.directPosition
 		
-		constructor(private parameter: TweenParameter<{x: number, y: number}>, update: (k: number) => void) {
+		constructor(private parameter: TweenParameter<TweenPosition>, update: (k: number) => void) {
 			if (!isNullable(update)) {
 				this.update = update
 			}
 			
 			if (isNullable(parameter['to'])) {
-				const p = parameter as {x: number, y: number}
+				const p = parameter as TweenPosition
 				this.to = {x: p.x, y: p.y}
 			}
 			else {
-				const p = parameter as {from: {x: number, y: number}, to: {x: number, y: number}}
+				const p = parameter as {from: TweenPosition, to: TweenPosition}
 				this.to = {x: p.to.x, y: p.to.y}
 				if (p.from) {
 					this.from = {x: p.from.x, y: p.from.y}
 				}
 			}
 			
-			if (!isNullable(parameter['mod'])) {
-				this.modify = parameter['mod']
+			if (!isNullable(parameter['calc'])) {
+				this.calculate = parameter['calc']
 			}
 		}
 		
@@ -241,14 +239,13 @@ export namespace tween_node {
 		}
 		
 		public move(k: number) {
-			let current = {x: this.from.x + this.delta.x * k, y: this.from.y + this.delta.y * k}
-			current = this.modify(k, current, this.from, this.to)
+			const current = this.calculate(k, this.from, this.to, this.delta)
 			this.target.setPosition(current.x, current.y)
 			this.update(k)
 		}
 		
 		public complete() {
-			this.target.setPosition(this.to.x, this.to.y)
+			this.move(1)
 			
 			this.target = null
 			this.from = null

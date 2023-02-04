@@ -1,5 +1,5 @@
-import {Component, easing, Node} from 'cc'
-import {NodeTweenParameters, ObjectTweenParameters, Tween, TweenBase, TweenEasing, Tweener, TweenParallel, TweenSequence} from '../../Tweener'
+import {Component, Node} from 'cc'
+import {NodeTweenParameters, ObjectTweenParameters, Tween, TweenActions, TweenEasing, Tweener, TweenParallel, TweenSequence} from '../../Tweener'
 import {tween_action as _ta} from './tween-action'
 import {tween_node as _tn} from './tween-node'
 import {tween_common as _tc} from './tween-common'
@@ -179,8 +179,8 @@ export namespace tween {
 	
 	///
 	
-	function easingFromType(type: TweenEasing): _tc.Easing {
-		return easing[TweenEasing[type]]
+	function ensureEasing(easing: TweenEasing): TweenEasing {
+		return isNullable(easing) ? TweenEasing.linear : easing
 	}
 	
 	class TweenUpdater extends Component {
@@ -191,7 +191,7 @@ export namespace tween {
 		}
 	}
 	
-	abstract class TweenBaseImpl implements TweenBase {
+	abstract class TweenActionsImpl implements TweenActions {
 		public actions = new Array<_ta.Action>()
 		
 		public destroy() {
@@ -208,10 +208,12 @@ export namespace tween {
 			return this.add(new _ta.DelayAction(duration))
 		}
 		
-		public repeat(times: number, delay: number, fn: (iteration: number) => void): this {
+		public repeatCall(times: number, delay: number, fn: (iteration: number) => void): this {
 			require(times >= 0)
 			return this.add(new _ta.RepeatAction(times, delay, fn))
 		}
+		
+		public abstract repeatSequence(times: number, delay: number, builder: (sequence: TweenSequence) => void): this
 		
 		public update(duration: number, fn: (p: number) => void, easing?: TweenEasing): this
 		public update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): this
@@ -219,31 +221,39 @@ export namespace tween {
 		public update(duration: number, from: ((p: number) => void) | number | Long, to?: TweenEasing | number | Long, fn?: ((v: number) => void) | ((v: Long) => void), easing?: TweenEasing): this {
 			require(duration >= 0)
 			
-			if (from instanceof Long) {
-				// @ts-ignore
-				return this.add(new _ta.UpdateLongAction(from, to, duration, fn, easingFromType(isNullable(easing) ? TweenEasing.linear : easing)))
+			if (from instanceof Long || to instanceof Long) {
+				from = Long.from(from as number)
+				to = Long.from(to as number)
+				easing = ensureEasing(easing)
+				
+				if (!from.isHigh() && !to.isHigh()) {
+					if (fn) {
+						fn = (v: number) => Long.from(v)
+					}
+					return this.add(new _ta.UpdateAction(from.toInt(), to.toInt(), duration, fn as (v: number) => void, easing))
+				}
+				
+				return this.add(new _ta.UpdateLongAction(from, to, duration, fn as (v: Long) => void, easing))
 			}
 			
 			if (isFunction(from)) {
 				fn = from
-				// @ts-ignore
-				easing = to
+				easing = to as TweenEasing
 				from = 0
 				to = 1
 			}
 			
-			// @ts-ignore
-			return this.add(new _ta.UpdateAction(from, to, duration, fn, easingFromType(isNullable(easing) ? TweenEasing.linear : easing)))
+			return this.add(new _ta.UpdateAction(from, to as number, duration, fn as (v: number) => void, ensureEasing(easing)))
 		}
 		
 		public to(target: any, duration: number, parameters: any, easing?: TweenEasing): this {
 			require(duration >= 0)
 			
-			const e = easingFromType(isNullable(easing) ? TweenEasing.linear : easing)
+			easing = ensureEasing(easing)
 			
 			const action = target instanceof Node
-				? this.createNodeMotionAction(target, duration, parameters, e)
-				: this.createObjectMotionAction(target, duration, parameters, e)
+				? this.createNodeMotionAction(target, duration, parameters, easing)
+				: this.createObjectMotionAction(target, duration, parameters, easing)
 			return this.add(action)
 		}
 		
@@ -252,29 +262,48 @@ export namespace tween {
 			return this
 		}
 		
-		private createNodeMotionAction(target: Node, duration: number, parameters: NodeTweenParameters, easing: _tc.Easing): _ta.Action {
+		private createNodeMotionAction(target: Node, duration: number, parameters: NodeTweenParameters, easing: TweenEasing): _ta.Action {
 			const motions = _tn.factoryMotions(parameters)
 			return new _ta.NodeMotionAction(duration, target, easing, motions)
 		}
 		
-		private createObjectMotionAction<T>(target: T, duration: number, parameters: ObjectTweenParameters<T>, easing: _tc.Easing): _ta.Action {
+		private createObjectMotionAction<T>(target: T, duration: number, parameters: ObjectTweenParameters<T>, easing: TweenEasing): _ta.Action {
 			const keys = Object.keys(parameters)
 			return new _ta.ObjectMotionAction(duration, target, easing, keys, parameters)
 		}
 	}
 	
-	class TweenSequenceImpl extends TweenBaseImpl implements TweenSequence {
+	class TweenSequenceImpl extends TweenActionsImpl implements TweenSequence {
 		public parallel(builder: (p: TweenParallel) => void): this {
 			const b = new TweenParallelImpl()
 			builder(b)
 			return this.add(new _ta.ParallelAction(b.actions))
 		}
+		
+		public repeatSequence(times: number, delay: number, builder: (sequence: TweenSequence) => void): this {
+			while (true) {
+				builder(this)
+				if (--times == 0) break
+				if (delay > 0) this.delay(delay)
+			}
+			return this
+		}
 	}
 	
-	class TweenParallelImpl extends TweenBaseImpl implements TweenParallel {
+	class TweenParallelImpl extends TweenActionsImpl implements TweenParallel {
 		public sequence(builder: (sequence: TweenSequence) => void): this {
 			const sequence = new TweenSequenceImpl()
 			builder(sequence)
+			return this.add(new _ta.SequenceAction(sequence.actions))
+		}
+		
+		public repeatSequence(times: number, delay: number, builder: (sequence: TweenSequence) => void): this {
+			const sequence = new TweenSequenceImpl()
+			while (true) {
+				builder(sequence)
+				if (--times == 0) break
+				if (delay > 0) sequence.delay(delay)
+			}
 			return this.add(new _ta.SequenceAction(sequence.actions))
 		}
 	}
@@ -416,12 +445,16 @@ export namespace tween {
 			return this
 		}
 		
-		public repeat(delay: number, times: number, fn: (iteration: number) => void): this {
+		public repeatCall(delay: number, times: number, fn: (iteration: number) => void): this {
 			return this
 		}
 		
 		public update(duration: number, from: any, to?: any, fn?: any, easing?: TweenEasing): this {
-			return undefined
+			return this
+		}
+		
+		public repeatSequence(times: number, delay: number, builder: (sequence: TweenSequence) => void): this {
+			return this
 		}
 		
 	}
