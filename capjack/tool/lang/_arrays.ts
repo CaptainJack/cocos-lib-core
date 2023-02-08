@@ -177,6 +177,15 @@ export namespace _array {
 		return r
 	}
 	
+	export function associate<T, K, V>(collection: ArrayLike<T>, keySelector: (element: T) => K, valueSelector: (element: T) => V): Map<K, V> {
+		let map = new Map<K, V>()
+		for (let i = 0, l = collection.length; i < l; i++) {
+			let e = collection[i]
+			map.set(keySelector(e), valueSelector(e))
+		}
+		return map
+	}
+	
 	export function associateBy<T, K>(collection: ArrayLike<T>, keySelector: (element: T) => K): Map<K, T> {
 		let map = new Map<K, T>()
 		for (let i = 0, l = collection.length; i < l; i++) {
@@ -193,5 +202,9 @@ export namespace _array {
 			map.set(e, valueSelector(e))
 		}
 		return map
+	}
+	
+	export function reverse<T>(collection: Array<T>): Array<T> {
+		return collection.concat().reverse()
 	}
 }

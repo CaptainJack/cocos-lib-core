@@ -1,6 +1,7 @@
 import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalArgumentException'
 import {_array} from '../capjack/tool/lang/_arrays'
 
+
 export namespace _random {
 	export function int(bound: number): number {
 		if (bound <= 0) {
@@ -16,12 +17,17 @@ export namespace _random {
 		return from == to ? from : (int(to - from + 1) + from)
 	}
 	
-	export function gamble(chance: number): Boolean {
+	export function gamble(chance: number): boolean {
 		if (chance == 0.0) return false
 		if (chance == 1.0) return true
 		
 		return Math.random() < chance
 	}
+	
+	export function boolean(): boolean {
+		return gamble(0.5)
+	}
+	
 	
 	export function element<T>(collection: ArrayLike<T>): T | null {
 		let l = collection.length

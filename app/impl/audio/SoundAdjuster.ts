@@ -30,11 +30,7 @@ export class FadeSoundAdjuster implements SoundAdjuster {
 	
 	public handleStop(): boolean {
 		if (this.sound) {
-			this.sound.smoothVolume(this.duration, 0).then(() => {
-				if (this.sound) {
-					this.sound.doStop()
-				}
-			})
+			this.sound.smoothVolume(this.duration, 0).then(() => this.sound && this.sound.doStop())
 		}
 		return true
 	}
@@ -61,7 +57,7 @@ export class FadeStopSoundAdjuster implements SoundAdjuster {
 	
 	public handleStop(): boolean {
 		if (this.sound) {
-			this.sound.smoothVolume(this.duration, 0).then(() => this.sound.doStop())
+			this.sound.smoothVolume(this.duration, 0).then(() => this.sound && this.sound.doStop())
 			
 		}
 		return true
