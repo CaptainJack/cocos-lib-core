@@ -6,7 +6,7 @@ import {Long} from '../capjack/tool/lang/Long'
 export interface Tweener {
 	tween(): Tween
 	
-	to(target: Node, duration: number, parameters: NodeTweenParameters, easing?: TweenEasing): Cancelable
+	to(target: Node | Array<Node>, duration: number, parameters: NodeTweenParameters, easing?: TweenEasing): Cancelable
 	
 	to<T>(target: T, duration: number, parameters: ObjectTweenParameters<T>, easing?: TweenEasing): Cancelable
 	
@@ -19,6 +19,8 @@ export interface Tweener {
 	update(duration: number, fn: (p: number) => void, easing?: TweenEasing): Cancelable
 	
 	update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): Cancelable
+	
+	update(duration: number, from: Long, to: Long, fn: (v: Long) => void, easing?: TweenEasing): this
 }
 
 export interface TweenActions {
