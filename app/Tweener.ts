@@ -22,11 +22,11 @@ export interface Tweener {
 }
 
 export interface TweenActions {
-	to(target: Node, duration: number, parameters: NodeTweenParameters, easing?: TweenEasing): this
+	to(target: Node | Array<Node>, duration: number, parameters: NodeTweenParameters, easing?: TweenEasing): this
 	
 	to<T>(target: T, duration: number, parameters: ObjectTweenParameters<T>, easing?: TweenEasing): this
 	
-	delay(duration: number): this
+	delay(duration: number, fn?: () => void): this
 	
 	call(fn: () => void): this
 	
@@ -62,6 +62,9 @@ export type TweenCalculator<T> = (k: number, from: T, to: T, delta: T) => T
 
 export type TweenParameter<T> = T | {to: T, from?: T, calc?: TweenCalculator<T>}
 
+export type TweenParameterOpacity<T> = TweenParameter<T> & {active?: boolean}
+
+
 export type TweenPosition = {x: number, y: number}
 
 export interface NodeTweenParameters extends TweenParameters {
@@ -72,7 +75,7 @@ export interface NodeTweenParameters extends TweenParameters {
 	height?: TweenParameter<number>
 	x?: TweenParameter<number>
 	y?: TweenParameter<number>
-	opacity?: TweenParameter<number>
+	opacity?: TweenParameterOpacity<number>,
 	position?: TweenParameter<TweenPosition> | BezierCurve,
 	update?: (p: number) => void
 }

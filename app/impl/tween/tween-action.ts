@@ -29,12 +29,14 @@ export namespace tween_action {
 	}
 	
 	export class DelayAction implements Action {
-		constructor(private duration: number) {
+		constructor(private duration: number, private fn?: () => void) {
 		}
 		
 		public update(time): boolean {
 			this.duration -= time
-			return this.duration <= 0
+			const b = this.duration <= 0
+			if (b && this.fn) this.fn()
+			return b
 		}
 		
 		public start(): void {}

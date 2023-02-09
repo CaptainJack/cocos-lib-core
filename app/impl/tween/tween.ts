@@ -203,9 +203,9 @@ export namespace tween {
 			return this.add(new _ta.CallAction(fn))
 		}
 		
-		public delay(duration: number): this {
+		public delay(duration: number, fn?: () => void): this {
 			require(duration >= 0)
-			return this.add(new _ta.DelayAction(duration))
+			return this.add(new _ta.DelayAction(duration, fn))
 		}
 		
 		public repeatCall(times: number, delay: number, fn: (iteration: number) => void): this {
@@ -247,6 +247,13 @@ export namespace tween {
 		}
 		
 		public to(target: any, duration: number, parameters: any, easing?: TweenEasing): this {
+			if (Array.isArray(target)) {
+				for (const t of target) {
+					this.to(t, duration, parameters, easing)
+				}
+				return this
+			}
+			
 			require(duration >= 0)
 			
 			easing = ensureEasing(easing)
@@ -382,8 +389,8 @@ export namespace tween {
 			return this
 		}
 		
-		public delay(duration: number): this {
-			if (this.alive) super.delay(duration)
+		public delay(duration: number, fn?: () => void): this {
+			if (this.alive) super.delay(duration, fn)
 			return this
 		}
 		

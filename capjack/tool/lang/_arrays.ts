@@ -1,6 +1,7 @@
-export const EMPTY_ARRAY = []
-
+import {isFunction} from './_utils'
 import {NoSuchElementException} from './exceptions/NoSuchElementException'
+
+export const EMPTY_ARRAY = []
 
 export namespace _array {
 	export const ORDER_NUMBER_NATURAL = (a: number, b: number) => a === b ? 0 : (a > b ? 1 : -1)
@@ -36,8 +37,36 @@ export namespace _array {
 		return -1
 	}
 	
-	export function any<T>(collection: ArrayLike<T>, predicate: (element: T) => boolean): boolean {
-		return indexOf(collection, predicate) !== -1
+	export function any<T>(collection: ArrayLike<T>, predicate: T | ((element: T) => boolean)): boolean {
+		if (isFunction(predicate)) {
+			return indexOf(collection, predicate) !== -1
+		}
+		
+		for (let i = 0, l = collection.length; i < l; i++) {
+			if (predicate == collection[i]) {
+				return true
+			}
+		}
+		
+		return false
+	}
+	
+	export function all<T>(collection: ArrayLike<T>, predicate: T | ((element: T) => boolean)): boolean {
+		if (isFunction(predicate)) {
+			for (let i = 0, l = collection.length; i < l; i++) {
+				if (!predicate(collection[i])) {
+					return false
+				}
+			}
+		}
+		else {
+			for (let i = 0, l = collection.length; i < l; i++) {
+				if (predicate != collection[i]) {
+					return false
+				}
+			}
+		}
+		return true
 	}
 	
 	export function isEmpty(collection: ArrayLike<any>): boolean {

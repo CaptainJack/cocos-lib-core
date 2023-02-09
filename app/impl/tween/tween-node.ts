@@ -1,5 +1,5 @@
 import {tween_common as _tc} from './tween-common'
-import {NodeTweenParameters, TweenCalculator, TweenParameter, TweenPosition} from '../../Tweener'
+import {NodeTweenParameters, TweenCalculator, TweenParameter, TweenParameterOpacity, TweenPosition} from '../../Tweener'
 import {Component, Node, UIOpacity, UIRenderer} from 'cc'
 import {IllegalArgumentException} from '../../../capjack/tool/lang/exceptions/IllegalArgumentException'
 import {EMPTY_FUNCTION, isNullable, isNumber} from '../../../capjack/tool/lang/_utils'
@@ -40,9 +40,9 @@ export namespace tween_node {
 	abstract class SingleNumberMotion implements NodeMotion {
 		protected target: Node
 		protected update: (k: number) => void = EMPTY_FUNCTION
-		private to: number
-		private from: number = null
-		private delta: number
+		protected to: number
+		protected from: number = null
+		protected delta: number
 		private calculate: TweenCalculator<number> = TweenCalculator.direct
 		
 		constructor(protected parameter: TweenParameter<number>, update: (k: number) => void) {
@@ -281,6 +281,12 @@ export namespace tween_node {
 	
 	class Motion_Opacity extends SingleNumberMotion {
 		private behavior: Motion_Opacity_Behavior
+		private active: boolean
+		
+		constructor(protected parameter: TweenParameterOpacity<number>, update: (k: number) => void) {
+			super(parameter, update)
+			this.active = isNumber(parameter) ? false : !!parameter.active
+		}
 		
 		public start(target: Node) {
 			let component: UIOpacity | UIRenderer = target.getComponent(UIOpacity)
@@ -296,11 +302,21 @@ export namespace tween_node {
 					throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
 				}
 			}
+			if (this.active) {
+				target.active = true
+			}
 			super.start(target)
 		}
 		
 		public clone(): Motion_Opacity {
 			return new Motion_Opacity(this.parameter, this.update)
+		}
+		
+		public move(k: number) {
+			super.move(k)
+			if (this.active && k == 1 && this.to == 0) {
+				this.target.active = false
+			}
 		}
 		
 		public complete() {
