@@ -20,7 +20,7 @@ export interface Tweener {
 	
 	update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): Cancelable
 	
-	update(duration: number, from: Long, to: Long, fn: (v: Long) => void, easing?: TweenEasing): this
+	update(duration: number, from: Long, to: Long, fn: (v: Long) => void, easing?: TweenEasing): Cancelable
 }
 
 export interface TweenActions {

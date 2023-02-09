@@ -1,5 +1,5 @@
 import {Class} from '../capjack/tool/lang/_types'
-import {Component, Node, UIRenderer, sys, UIOpacity, UITransform} from 'cc'
+import {Component, Node, sys, UIOpacity, UIRenderer, UITransform} from 'cc'
 import {require} from '../capjack/tool/lang/_utils'
 import {IllegalArgumentException} from '../capjack/tool/lang/exceptions/IllegalArgumentException'
 
@@ -106,9 +106,10 @@ Node.prototype.getChild = function (path: string): Node {
 Node.prototype.getChildDeep = function (path: string): Node {
 	let i = path.indexOf('/')
 	if (i > 0) {
-		const n = this.getChildDeep(path.substring(0, i))
-		if (n) {
-			return n.getChildDeep(path.substring(i + 1))
+		const p = path.substring(i + 1)
+		for (let n of collectChildrenDeep(this, path.substring(0, i), [])) {
+			n = n.getChildDeep(p)
+			if (n) return n
 		}
 	}
 	else {
@@ -118,7 +119,15 @@ Node.prototype.getChildDeep = function (path: string): Node {
 	return null
 }
 
-function getChildDeep(node: Node, name: string):Node {
+function collectChildrenDeep(node: Node, name: string, target: Array<Node>): Array<Node> {
+	for (const n of node.children) {
+		if (n.name == name) target.push(n)
+		collectChildrenDeep(n, name, target)
+	}
+	return target
+}
+
+function getChildDeep(node: Node, name: string): Node {
 	let c = node.getChildByName(name)
 	if (c) {
 		return c
@@ -207,11 +216,11 @@ Component.prototype.getChildComponent = function <T extends Component>(path: str
 	return this.node.getChildComponent(path, type)
 }
 
-Component.prototype.getChild = function(path: string): Node {
+Component.prototype.getChild = function (path: string): Node {
 	return this.node.getChild(path)
 }
 
-Component.prototype.getChildDeep = function(path: string): Node {
+Component.prototype.getChildDeep = function (path: string): Node {
 	return this.node.getChildDeep(path)
 }
 
@@ -231,7 +240,7 @@ Component.prototype.setWidth = function (value: number) {
 	this.node.setWidth(value)
 }
 
-Component.prototype.getWidth = function():number {
+Component.prototype.getWidth = function (): number {
 	return this.node.getWidth()
 }
 
@@ -239,7 +248,7 @@ Component.prototype.setHeight = function (value: number) {
 	this.node.setHeight(value)
 }
 
-Component.prototype.getHeight = function():number {
+Component.prototype.getHeight = function (): number {
 	return this.node.getHeight()
 }
 

@@ -1,4 +1,4 @@
-import {_decorator, AudioClip, EventKeyboard, EventTouch, Input, input, NodeEventType, UITransform} from 'cc'
+import {_decorator, AudioClip, EventKeyboard, EventTouch, Input, input, NodeEventType} from 'cc'
 import {Cancelable} from '../../capjack/tool/utils/Cancelable'
 import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 import {_string} from '../../capjack/tool/lang/_string'
@@ -103,7 +103,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	protected onLoad() {
-		super.onLoad();
+		super.onLoad()
 		this._keyed = !_string.isBlank(this._key)
 		if (this._keyed) {
 			if (_string.contains(this._key, 'SPACE')) {
@@ -252,7 +252,7 @@ export class Button extends NormalizedComponent {
 			return
 		}
 		
-		this._pressed = this.node.getComponent(UITransform).hitTest(touch.getUILocation())
+		this._pressed = this.node._uiProps.uiTransformComp!.hitTest(touch.getLocation())
 		this.updateState()
 	}
 	

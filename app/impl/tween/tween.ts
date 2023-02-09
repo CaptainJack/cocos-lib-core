@@ -92,9 +92,7 @@ export namespace tween {
 			return Cancelable.DUMMY
 		}
 		
-		public update(duration: number, fn: (p: number) => void, easing?: TweenEasing): Cancelable
-		public update(duration: number, from: number, to: number, fn: (v: number) => void, easing?: TweenEasing): Cancelable
-		public update(a: number, b: ((p: number) => void) | number, c?: TweenEasing | number, d?: (v: number) => void, e?: TweenEasing): Cancelable {
+		public update(a: any, b: any, c?: any, d?: any, e?: any): Cancelable {
 			if (this.alive) {
 				const tween = new DisposableTween()
 				// @ts-ignore
@@ -247,13 +245,6 @@ export namespace tween {
 		}
 		
 		public to(target: any, duration: number, parameters: any, easing?: TweenEasing): this {
-			if (Array.isArray(target)) {
-				for (const t of target) {
-					this.to(t, duration, parameters, easing)
-				}
-				return this
-			}
-			
 			require(duration >= 0)
 			
 			easing = ensureEasing(easing)
@@ -281,6 +272,18 @@ export namespace tween {
 	}
 	
 	class TweenSequenceImpl extends TweenActionsImpl implements TweenSequence {
+		
+		public to(target: any, duration: number, parameters: any, easing?: TweenEasing): this {
+			if (Array.isArray(target)) {
+				this.parallel(p => {
+					for (const t of target) p.to(t, duration, parameters, easing)
+				})
+				return this
+			}
+			
+			return super.to(target, duration, parameters, easing);
+		}
+		
 		public parallel(builder: (p: TweenParallel) => void): this {
 			const b = new TweenParallelImpl()
 			builder(b)
@@ -298,6 +301,16 @@ export namespace tween {
 	}
 	
 	class TweenParallelImpl extends TweenActionsImpl implements TweenParallel {
+		
+		public to(target: any, duration: number, parameters: any, easing?: TweenEasing): this {
+			if (Array.isArray(target)) {
+				for (const t of target) super.to(t, duration, parameters, easing)
+				return this
+			}
+			
+			return super.to(target, duration, parameters, easing);
+		}
+		
 		public sequence(builder: (sequence: TweenSequence) => void): this {
 			const sequence = new TweenSequenceImpl()
 			builder(sequence)
