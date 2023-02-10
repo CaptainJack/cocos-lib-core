@@ -102,6 +102,10 @@ export namespace tween {
 			return Cancelable.DUMMY
 		}
 		
+		public schedule(duration: number, fn?: () => void): Cancelable {
+			return this.sequence(s => s.delay(duration, fn))
+		}
+		
 		public stop() {
 			if (this.alive) {
 				this.alive = false
