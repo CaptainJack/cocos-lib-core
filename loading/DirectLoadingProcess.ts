@@ -1,6 +1,6 @@
 import {AbstractLoadingProcess} from './AbstractLoadingProcess'
 
-export class DirectLoadingProcess extends AbstractLoadingProcess {
+export class DirectLoadingProcess extends AbstractLoadingProcess<void> {
 	
 	complete() {
 		app.assistant.execute(() => this.doComplete())

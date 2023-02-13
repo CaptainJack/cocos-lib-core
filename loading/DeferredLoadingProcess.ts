@@ -1,13 +1,13 @@
 import {AbstractLoadingProcess} from './AbstractLoadingProcess'
 import {LoadingProcess} from './LoadingProcess'
 
-export class DeferredLoadingProcess extends AbstractLoadingProcess {
+export class DeferredLoadingProcess<R> extends AbstractLoadingProcess<R> {
 	
-	private target: LoadingProcess = null
+	private target: LoadingProcess<R> = null
 	
-	assign(target: LoadingProcess) {
+	public assign(target: LoadingProcess<R>) {
 		this.target = target
-		this.target.onComplete(() => this.doComplete())
+		this.target.onComplete(r => this.doComplete(r))
 	}
 	
 	protected calcProgress(): number {

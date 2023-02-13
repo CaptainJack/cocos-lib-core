@@ -1,36 +1,36 @@
 import {LoadingProcess} from './LoadingProcess'
 
-export abstract class AbstractLoadingProcess implements LoadingProcess {
-	private completeHandlers: Array<() => void> = []
-	private completeArgs: any
+export abstract class AbstractLoadingProcess<R> implements LoadingProcess<R> {
+	private handlers: Array<(result: R) => void> = []
+	private result: R = null
 	
 	constructor() {}
 	
 	get completed(): boolean {
-		return this.completeHandlers === null
+		return this.handlers === null
 	}
 	
 	get progress(): number {
 		return this.completed ? 1 : this.calcProgress()
 	}
 	
-	onComplete(handler: (...args) => void) {
+	onComplete(handler: (result: R) => void) {
 		if (this.completed) {
-			app.assistant.execute(() => handler.apply(null, this.completeArgs))
+			app.assistant.execute(() => handler.apply(null, this.result))
 		}
 		else {
-			this.completeHandlers.push(handler)
+			this.handlers.push(handler)
 		}
 	}
 	
-	protected doComplete(...args: any) {
-		const handlers = this.completeHandlers
-		this.completeHandlers = null
-		this.completeArgs = args
+	protected doComplete(result?:R) {
+		const handlers = this.handlers
+		this.handlers = null
+		this.result = result
 		
 		app.assistant.execute(() => {
 			for (const handler of handlers) {
-				handler.apply(null, args)
+				handler(result)
 			}
 		})
 		

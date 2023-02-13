@@ -1,6 +1,6 @@
 import {LoadingProcess} from './LoadingProcess'
 
-export class FakeLoadingProcess implements LoadingProcess {
+export class FakeLoadingProcess implements LoadingProcess<void> {
 	readonly completed: boolean = true
 	readonly progress: number = 1
 	

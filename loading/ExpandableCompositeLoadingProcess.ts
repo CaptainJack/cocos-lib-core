@@ -2,8 +2,8 @@ import {LoadingProcess} from './LoadingProcess'
 import {CompositeLoadingProcess} from './CompositeLoadingProcess'
 import {DirectLoadingProcess} from './DirectLoadingProcess'
 
-export class ExpandableCompositeLoadingProcess extends CompositeLoadingProcess {
-	public add<T extends LoadingProcess> (process: T): T {
+export class ExpandableCompositeLoadingProcess<R> extends CompositeLoadingProcess<R> {
+	public add<T extends LoadingProcess<any>> (process: T): T {
 		this.processes.push(process)
 		process.onComplete(() => this.tryComplete())
 		return process

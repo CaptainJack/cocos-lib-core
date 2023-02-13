@@ -1,7 +1,7 @@
-export interface LoadingProcess {
+export interface LoadingProcess<R> {
 	readonly progress: number
 	readonly completed: boolean
 	
-	onComplete(handler: () => void)
+	onComplete(handler: (result: R) => void)
 }
 

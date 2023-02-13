@@ -2,11 +2,12 @@ import {LoadingProcess} from './LoadingProcess'
 import {AbstractLoadingProcess} from './AbstractLoadingProcess'
 import {_array} from '../capjack/tool/lang/_arrays'
 
-export class CompositeLoadingProcess extends AbstractLoadingProcess implements LoadingProcess {
+export class CompositeLoadingProcess<R> extends AbstractLoadingProcess<R> {
 	private completeCount = 0
 	
 	constructor(
-		protected processes: Array<LoadingProcess> = []
+		protected processes: Array<LoadingProcess<any>> = [],
+		private resultResolver?: () => R
 	) {
 		super()
 		
@@ -21,7 +22,8 @@ export class CompositeLoadingProcess extends AbstractLoadingProcess implements L
 	
 	protected tryComplete() {
 		if (++this.completeCount == this.processes.length) {
-			this.doComplete()
+			this.doComplete(this.resultResolver ? this.resultResolver() : null)
+			this.resultResolver = null
 			this.processes = null
 		}
 	}

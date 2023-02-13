@@ -13,6 +13,9 @@ import {WorkerEventChannel} from '../../events/WorkerEventChannel'
 import {AudioImpl} from './audio/AudioImpl'
 import {Bundler} from '../Bundler'
 import {BundlerImpl} from './BundlerImpl'
+import {Assets} from '../Assets'
+import {AssetsImpl} from './AssetsImpl'
+import {_string} from '../../capjack/tool/lang/_string'
 
 export class ApplicationImpl implements Application {
 	public readonly debug: boolean
@@ -23,10 +26,11 @@ export class ApplicationImpl implements Application {
 	public readonly events: WorkerEventChannel<any>
 	public readonly audio: Audio
 	public readonly bundler: Bundler
+	public readonly assets: Assets
 	
 	private _stopped: boolean = false
 	
-	constructor(name: string, config: any) {
+	constructor(name: string, config: any, bundleDependencies: Record<string, Array<string>>) {
 		this.debug = !!config.debug
 		
 		this.assistant = new StoppableTemporalAssistantProxy(new WgsTemporalAssistant(globalThis, e => this.handleError(e)))
@@ -36,6 +40,10 @@ export class ApplicationImpl implements Application {
 		this.events = new WorkerEventChannel(this.assistant, e => this.handleError(e))
 		this.audio = new AudioImpl(scene.node, this.tweener)
 		this.bundler = new BundlerImpl({}, this.assistant, e => this.handleError(e))
+		this.assets = new AssetsImpl(
+			_string.endWith(config.resources, '/') + (config.local ? 'assets-external' : 'external'),
+			bundleDependencies,
+			e => this.handleError(e))
 		
 		window.addEventListener('error', () => this.stop())
 		

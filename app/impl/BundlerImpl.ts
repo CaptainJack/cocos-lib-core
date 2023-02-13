@@ -3,9 +3,6 @@ import {Bundler} from '../Bundler'
 import {Logging} from '../../capjack/tool/logging/Logging'
 import {Assistant} from '../../capjack/tool/utils/assistant/Assistant'
 import {LoadingProcess} from '../../loading/LoadingProcess'
-import {isString} from '../../capjack/tool/lang/_utils'
-import {CompositeLoadingProcess} from '../../loading/CompositeLoadingProcess'
-import {_string} from '../../capjack/tool/lang/_string'
 import {AbstractLoadingProcess} from '../../loading/AbstractLoadingProcess'
 
 export class BundlerImpl implements Bundler {
@@ -29,36 +26,12 @@ export class BundlerImpl implements Bundler {
 		handlers.push(handler)
 	}
 	
-	public load(names: string | Array<string>): LoadingProcess {
-		if (isString(names)) {
-			return new BundleLoading(this, names)
-		}
-		return new CompositeLoadingProcess(names.map(n => new BundleLoading(this, n)))
+	public load(name: string): LoadingProcess<void> {
+		return new BundleLoading(this, name)
 	}
 	
-	public loadWithAssets(bundle: string, assets: Array<string>): LoadingProcess {
-		return new BundleLoading(this, bundle, assets)
-	}
-	
-	public unloadWithoutAssets(bundle: string, assets: Array<string>): void {
-		const b = assetManager.getBundle(bundle)
-		const infos = b.getDirWithPath('')
-		for (const info of infos) {
-			if (!_string.startsWith(info.path, assets)) {
-				b.release(info.path)
-			}
-		}
-	}
-	
-	public unload(names: string | Array<string>): void {
-		if (isString(names)) {
-			this.doUnload(names)
-		}
-		else {
-			for (const name of names) {
-				this.doUnload(name)
-			}
-		}
+	public unload(name: string): void {
+		this.doUnload(name)
 	}
 	
 	public getVersion(name: string): string | undefined {
@@ -87,10 +60,10 @@ export class BundlerImpl implements Bundler {
 	}
 }
 
-class BundleLoading extends AbstractLoadingProcess implements LoadingProcess {
+class BundleLoading extends AbstractLoadingProcess<void> implements LoadingProcess<void> {
 	_progress: number = 0
 	
-	constructor(private bundler: BundlerImpl, private name: string, assets?: Array<string>) {
+	constructor(private bundler: BundlerImpl, private name: string) {
 		super()
 		
 		assetManager.loadBundle(name, {version: bundler.getVersion(name)}, (e, bundle) => {
@@ -99,18 +72,10 @@ class BundleLoading extends AbstractLoadingProcess implements LoadingProcess {
 			}
 			else {
 				this._progress = 0.01
-				if (assets) {
-					bundle.load(assets,
-						(completed, total) => this.handleProgress(completed, total),
-						(error) => this.handleComplete(error)
-					)
-				}
-				else {
-					bundle.loadDir('',
-						(completed, total) => this.handleProgress(completed, total),
-						(error) => this.handleComplete(error)
-					)
-				}
+				bundle.loadDir('',
+					(completed, total) => this.handleProgress(completed, total),
+					(error) => this.handleComplete(error)
+				)
 			}
 		})
 	}
