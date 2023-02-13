@@ -16,7 +16,7 @@ export abstract class AbstractLoadingProcess<R> implements LoadingProcess<R> {
 	
 	onComplete(handler: (result: R) => void) {
 		if (this.completed) {
-			app.assistant.execute(() => handler.apply(null, this.result))
+			app.assistant.execute(() => handler(this.result))
 		}
 		else {
 			this.handlers.push(handler)

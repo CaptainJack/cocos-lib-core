@@ -163,7 +163,12 @@ export namespace _array {
 		return collection
 	}
 	
-	export function addAllDistinct<T>(collection: Array<T>, source: Array<T>) {
+	
+	export function addDistinct<T>(collection: Array<T>, value: T) {
+		if (!contains(collection, value)) collection.push(value)
+	}
+	
+	export function addDistinctMany<T>(collection: Array<T>, source: Array<T>) {
 		for (const e of source) {
 			if (!contains(collection, e)) collection.push(e)
 		}

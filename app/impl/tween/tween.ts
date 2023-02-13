@@ -230,7 +230,8 @@ export namespace tween {
 				
 				if (!from.isHigh() && !to.isHigh()) {
 					if (fn) {
-						fn = (v: number) => Long.from(v)
+						const oldFn = fn as (v: Long) => void
+						fn = (v: number) => oldFn(Long.from(v))
 					}
 					return this.add(new _ta.UpdateAction(from.toInt(), to.toInt(), duration, fn as (v: number) => void, easing))
 				}
