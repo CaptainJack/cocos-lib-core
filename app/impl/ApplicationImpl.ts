@@ -18,6 +18,7 @@ import {AssetsImpl} from './AssetsImpl'
 import {_string} from '../../capjack/tool/lang/_string'
 
 export class ApplicationImpl implements Application {
+	public readonly local: boolean
 	public readonly debug: boolean
 	public readonly assistant: StoppableTemporalAssistantProxy
 	public readonly tweener: tween.TweenerImpl
@@ -31,6 +32,7 @@ export class ApplicationImpl implements Application {
 	private _stopped: boolean = false
 	
 	constructor(name: string, config: any, bundleDependencies: Record<string, Array<string>>) {
+		this.local = !!config.local
 		this.debug = !!config.debug
 		
 		this.assistant = new StoppableTemporalAssistantProxy(new WgsTemporalAssistant(globalThis, e => this.handleError(e)))
@@ -41,7 +43,7 @@ export class ApplicationImpl implements Application {
 		this.audio = new AudioImpl(scene.node, this.tweener)
 		this.bundler = new BundlerImpl({}, this.assistant, e => this.handleError(e))
 		this.assets = new AssetsImpl(
-			_string.endWith(config.resources, '/') + (config.local ? 'assets-external' : 'external'),
+			_string.endWith(config.resources, '/') + (this.local ? 'assets-external' : 'external'),
 			bundleDependencies,
 			e => this.handleError(e))
 		

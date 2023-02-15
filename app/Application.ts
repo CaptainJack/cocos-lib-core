@@ -8,6 +8,7 @@ import {Bundler} from './Bundler'
 import {Assets} from './Assets'
 
 export interface Application {
+	readonly local: boolean
 	readonly debug: boolean
 	readonly assistant: TemporalAssistant
 	readonly tweener: Tweener
