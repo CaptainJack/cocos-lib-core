@@ -22,6 +22,10 @@ export class ToggleButton extends Button {
 		this.toggled = !this.toggled
 	}
 	
+	public onPress(handler: (button: ToggleButton) => void, target?: any) {
+		super.onPress(handler, target)
+	}
+	
 	protected onToggle() {
 	}
 }
