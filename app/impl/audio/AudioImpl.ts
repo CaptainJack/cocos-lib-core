@@ -6,7 +6,6 @@ import {RealSoundOwner} from './RealSoundOwner'
 import {Tweener} from '../../Tweener'
 import {Audio, Sound, SoundSettings} from '../../Audio'
 import {isEmpty, isString} from '../../../capjack/tool/lang/_utils'
-import {_assets} from '../../../tools/_assets'
 import {ArrayQueue} from '../../../capjack/tool/utils/collections/ArrayQueue'
 import {Cancelable} from '../../../capjack/tool/utils/Cancelable'
 
@@ -35,10 +34,10 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	public prepare(clip: string | AudioClip, settings?: SoundSettings): Sound {
 		if (isEmpty(clip)) return DummySound.INSTANCE
 		
-		let name : string
+		let name: string
 		if (isString(clip)) {
 			name = clip
-			clip  = this.extractClip(name)
+			clip = this.extractClip(name)
 			if (clip == null) return DummySound.INSTANCE
 		}
 		else {
@@ -61,7 +60,7 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		if (isEmpty(clip)) return
 		
 		if (isString(clip)) {
-			clip  = this.extractClip(clip)
+			clip = this.extractClip(clip)
 		}
 		
 		if (clip) {
@@ -119,7 +118,7 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 	private extractClip(name: string): AudioClip | null {
 		if (isEmpty(name)) return null
 		const path = this.resolvePath(name)
-		return _assets.exists(path) ? _assets.get(path, AudioClip) : null
+		return app.assets.exists(path) ? app.assets.get(path, AudioClip) : null
 	}
 	
 	private provideSource(): AudioSource {

@@ -29,8 +29,19 @@ export class AssetsImpl implements Assets {
 		e = false
 		const i = path.indexOf(':')
 		if (i > 0) {
-			const bundle = assetManager.getBundle(path.substring(0, i))
-			if (bundle) e = !!bundle.getInfoWithPath(path.substring(i + 1))
+			const pathBundle = path.substring(0, i)
+			const pathRelative = path.substring(i + 1)
+			const bundle = assetManager.getBundle(pathBundle)
+			if (bundle) e = !!bundle.getInfoWithPath(pathRelative)
+			if (!e) {
+				const dependencies = this.bundleDependencies[pathBundle]
+				if (dependencies) {
+					for (const dependency of dependencies) {
+						e = this.exists(dependency + ':' + pathRelative)
+						if (e) break
+					}
+				}
+			}
 		}
 		else if (scene.orientation === SceneOrientation.ABSENT) {
 			e = !!assetManager.getBundle('core').getInfoWithPath(path)
@@ -52,7 +63,18 @@ export class AssetsImpl implements Assets {
 		
 		let asset: T
 		if (i > 0) {
-			asset = this.getFromBundle(path.substring(0, i), path.substring(i + 1), type)
+			const pathBundle = path.substring(0, i)
+			const pathRelative = path.substring(i + 1)
+			asset = this.getFromBundle(pathBundle, pathRelative, type)
+			if (!asset) {
+				const dependencies = this.bundleDependencies[pathBundle]
+				if (dependencies) {
+					for (const dependency of dependencies) {
+						asset = this.get(dependency + ':' + pathRelative, type)
+						if (asset) break
+					}
+				}
+			}
 		}
 		else if (scene.orientation === SceneOrientation.ABSENT) {
 			asset = this.getFromBundle('core', path, type)

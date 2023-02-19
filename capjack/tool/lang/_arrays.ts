@@ -241,4 +241,10 @@ export namespace _array {
 	export function reverse<T>(collection: Array<T>): Array<T> {
 		return collection.concat().reverse()
 	}
+	
+	export function newIntArray(size: number): Array<number> {
+		const array = new Array<number>(size)
+		array.fill(0)
+		return array
+	}
 }
