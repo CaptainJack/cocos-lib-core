@@ -5,15 +5,9 @@ import {EMPTY_FUNCTION} from '../../capjack/tool/lang/_utils'
 
 export class GuestBrowserAdapter extends AbstractBrowserAdapter {
 	
-	public readonly purchaseAvailable: boolean = false
-	
-	public authorize(): Promise<CpdAccount | null> {
+	public login(): Promise<CpdAccount> {
 		return this.getDeviceId().then(deviceId => {
-			return new CpdAccount(
-				this.makeCsiAuthKeyPrefix() + deviceId,
-				null,
-				null
-			)
+			return new CpdAccount(this.makeCsiAuthKeyPrefix() + deviceId, deviceId)
 		})
 	}
 	

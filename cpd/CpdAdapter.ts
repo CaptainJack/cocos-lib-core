@@ -1,11 +1,13 @@
 import {CpdAccount} from './CpdAccount'
 
 export interface CpdAdapter {
-	authorize(): Promise<CpdAccount | null>
+	readonly authorized: boolean
+	
+	login(): Promise<CpdAccount>
 	
 	loadShop(ids: string[],
 		receiver: (currency: string, products: Array<{id: string, price: number}>) => void,
-		purchaseConsumer: (productId:string, orderId: string, receipt: string, successConsumer: () => void) => void
+		purchaseConsumer: (productId: string, orderId: string, receipt: string, successConsumer: () => void) => void
 	): void
 	
 	purchase(
@@ -15,4 +17,16 @@ export interface CpdAdapter {
 	): void
 	
 	getAppFriends(): Promise<Array<string>>
+	
+	ready(): void
+	
+	authorize(): Promise<CpdAccount>
+	
+	isFullScreenAvailable():boolean
+	
+	isFullScreenCurrent():boolean
+	
+	enterFullScreen()
+	
+	exitFullScreen()
 }

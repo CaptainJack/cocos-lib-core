@@ -7,22 +7,21 @@ import {_random} from '../../tools/_random'
 import {EMPTY_FUNCTION, isNullable} from '../../capjack/tool/lang/_utils'
 
 export class VkBrowserAdapter extends AbstractBrowserAdapter {
-	public readonly purchaseAvailable: boolean = true
-	
 	private readonly _appId: number
-	private readonly _userId: string
+	private readonly userId: string
 	
 	constructor(storage: LocalStorage, appId: string, userId: string) {
 		super(storage)
 		this._appId = parseInt(appId)
-		this._userId = userId
+		this.userId = userId
 	}
 	
-	public authorize(): Promise<CpdAccount | null> {
+	public login(): Promise<CpdAccount> {
 		return new Promise((resolve, reject) =>
 			vkBridge.send('VKWebAppGetUserInfo')
 				.then(d => resolve(new CpdAccount(
-					this.makeCsiAuthKeyPrefix() + this._userId,
+					this.makeCsiAuthKeyPrefix() + this.userId,
+					this.userId,
 					d['first_name'] + ' ' + d['last_name'],
 					d['photo_200']
 				)))
@@ -38,7 +37,7 @@ export class VkBrowserAdapter extends AbstractBrowserAdapter {
 		vkBridge.send('VKWebAppShowOrderBox', {type: 'item', item: product.id})
 		.then(d => {
 			if (d.success) {
-				onSuccess(`VK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
+				onSuccess(`VK-${this.userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
 			}
 			else {
 				onFail('failure')

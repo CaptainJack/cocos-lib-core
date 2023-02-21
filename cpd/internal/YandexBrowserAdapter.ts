@@ -5,17 +5,15 @@ import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
 
 export class YandexBrowserAdapter extends AbstractBrowserAdapter {
-	public readonly purchaseAvailable: boolean = true
-	
-	private _userId: string
+	private userId: string
 	private payments: YaPayments
 	
 	constructor(storage: LocalStorage, private ysdk: YaSdk) {
 		super(storage)
+		this.authorized = false
 	}
 	
-	public authorize(): Promise<CpdAccount | null> {
-		
+	public login(): Promise<CpdAccount> {
 		return new Promise((resolve, reject) => {
 			this.player(resolve, reject)
 		})
@@ -25,7 +23,6 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 		receiver: (currency: string, products: Array<{id: string; price: number}>) => void,
 		purchaseConsumer: (productId: string, orderId: string, receipt: string, successConsumer: () => void) => void
 	): void {
-		
 		this.ysdk.getPayments({signed: true}).then(payments => {
 			this.payments = payments
 			
@@ -37,7 +34,7 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 					purchaseConsumer(null, null, purchases.signature, () => {
 						purchases.forEach(p => {
 							payments.consumePurchase(p.purchaseToken)
-						});
+						})
 					})
 				}
 			})
@@ -47,49 +44,76 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 	}
 	
 	public purchase(product: {id: string; name: string; price: number}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void {
-		this.payments.purchase({id: product.id})
-			.then(purchase => {
-				onSuccess(null, purchase.signature, () => this.payments.consumePurchase(purchase.purchaseToken))
-			})
-			.catch(() => onFail('failure'))
+		if (this.authorized) {
+			this.payments.purchase({id: product.id})
+				.then(purchase => {
+					onSuccess(null, purchase.signature, () => this.payments.consumePurchase(purchase.purchaseToken))
+				})
+				.catch(() => onFail('failure'))
+		}
 	}
 	
 	public getAppFriends(): Promise<Array<string>> {
 		return Promise.resolve([])
 	}
 	
+	public ready() {
+		this.ysdk.features.LoadingAPI?.ready()
+	}
+	
+	public authorize(): Promise<CpdAccount> {
+		return new Promise<CpdAccount>((resolve, reject) => {
+			this.ysdk.auth.openAuthDialog()
+				.then(() => {
+					this.player(a => {
+						if (this.authorized) resolve(a)
+						else reject()
+					}, reject)
+				})
+				.catch(reject)
+			
+		})
+	}
+	
+	public isFullScreenAvailable(): boolean {
+		return false
+	}
+	
+	public isFullScreenCurrent(): boolean {
+		return false
+	}
+	
+	public enterFullScreen() {
+	}
+	
+	public exitFullScreen() {
+	}
+	
 	protected makeCsiAuthKeyPrefix(): string {
 		return 'ya' + super.makeCsiAuthKeyPrefix()
 	}
 	
-	private player(resolve, reject) {
+	private player(resolve: (a: CpdAccount) => void, reject) {
 		this.ysdk.getPlayer({signed: true})
 			.then(player => {
-				if (player.getMode() === 'lite') {
-					this.auth(resolve, reject)
+				const element = document.getElementById('app-user-id')
+				if (element) element.innerText = `YA${this.userId}`
+				
+				this.authorized = player.getMode() !== 'lite'
+				this.userId = player.getUniqueID()
+				
+				if (!this.authorized) {
+					this.userId = 'GUEST-' + this.userId
 				}
-				else {
-					this._userId = player.getUniqueID()
-					
-					const element = document.getElementById("app-user-id")
-					if (element) {
-						element.innerText = `YA${this._userId}`
-					}
-					
-					resolve(new CpdAccount(
-						this.makeCsiAuthKeyPrefix() + this._userId,
-						player.getName(),
-						player.getPhoto('medium')
-					))
-					
-				}
+				
+				resolve(new CpdAccount(
+					this.makeCsiAuthKeyPrefix() + this.userId,
+					this.userId,
+					player.getName(),
+					player.getPhoto('medium')
+				))
+				
 			})
 			.catch(e => reject(new Exception('Failed to YANDEX getPlayer', extractError(e))))
-	}
-	
-	private auth(resolve, reject) {
-		this.ysdk.auth.openAuthDialog()
-			.then(() => this.player(resolve, reject))
-			.catch(() => this.auth(resolve, reject))
 	}
 }

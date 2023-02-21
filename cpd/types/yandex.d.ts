@@ -8,11 +8,33 @@ declare namespace YaGames {
 
 declare class YaSdk {
 	public auth: {
-		openAuthDialog():  Promise<any>
+		openAuthDialog(): Promise<any>
 	}
+	
+	public features: {
+		LoadingAPI: YaLoadingAPI
+	}
+	public screen: {
+		fullscreen: YaFullscreen
+	}
+	
 	public getPlayer(options: {}): Promise<YaPlayer>
 	
 	public getPayments(options: {signed: boolean}): Promise<YaPayments>
+}
+
+declare class YaLoadingAPI {
+	public ready()
+}
+
+declare class YaFullscreen {
+	readonly STATUS_ON: string
+	readonly STATUS_OFF: string
+	readonly status: string
+	
+	request(): Promise<void>
+	
+	exit(): Promise<void>
 }
 
 declare class YaPayments {

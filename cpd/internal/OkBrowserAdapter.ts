@@ -8,23 +8,21 @@ import {_random} from '../../tools/_random'
 import {Logging} from '../../capjack/tool/logging/Logging'
 
 export class OkBrowserAdapter extends AbstractBrowserAdapter {
-	public readonly purchaseAvailable: boolean = true
-	
-	private readonly _userId: string
+	private readonly userId: string
 	
 	private _onPurchaseSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void = EMPTY_FUNCTION
 	private _onPurchaseFail: (reason: string) => void = EMPTY_FUNCTION
 	
 	constructor(storage: LocalStorage, userId: string) {
 		super(storage)
-		this._userId = userId
+		this.userId = userId
 		
 		window['API_callback'] = (method: string, result: string, data: any) => {
 			Logging.getLogger('cpd').debug(`OK API_callback (method: ${method}, result: ${result}, data: ${JSON.stringify(data)}`)
 			
 			if (method == 'showPayment') {
 				if (result == 'ok') {
-					this._onPurchaseSuccess(`OK-${this._userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
+					this._onPurchaseSuccess(`OK-${this.userId}-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, null, EMPTY_FUNCTION)
 				}
 				else {
 					this._onPurchaseFail(data)
@@ -36,7 +34,7 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 		}
 	}
 	
-	public authorize(): Promise<CpdAccount | null> {
+	public login(): Promise<CpdAccount> {
 		return new Promise((resolve, reject) => {
 			FAPI.Client.call({'method': 'users.getCurrentUser', 'fields': 'name,pic128x128'}, (status, data, error) => {
 				if (error) {
@@ -44,7 +42,8 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 				}
 				else {
 					resolve(new CpdAccount(
-						this.makeCsiAuthKeyPrefix() + this._userId,
+						this.makeCsiAuthKeyPrefix() + this.userId,
+						this.userId,
 						data['name'],
 						data['pic128x128']
 					))

@@ -1,9 +1,10 @@
 import {CpdAdapter} from '../CpdAdapter'
 import {LocalStorage} from '../../app/LocalStorage'
 import {CpdAccount} from '../CpdAccount'
+import {screen} from 'cc'
 
 export abstract class AbstractAdapter implements CpdAdapter {
-	public readonly abstract purchaseAvailable: boolean
+	public authorized: boolean = true
 	
 	protected readonly _storage: LocalStorage
 	
@@ -11,7 +12,11 @@ export abstract class AbstractAdapter implements CpdAdapter {
 		this._storage = storage.branch('cpd')
 	}
 	
-	public abstract authorize(): Promise<CpdAccount | null>
+	public abstract login(): Promise<CpdAccount>
+	
+	public authorize(): Promise<CpdAccount> {
+		return Promise.reject()
+	}
 	
 	public abstract loadShop(ids: string[],
 		receiver: (currency: string, products: Array<{id: string; price: number}>) => void,
@@ -22,7 +27,25 @@ export abstract class AbstractAdapter implements CpdAdapter {
 	
 	public abstract getAppFriends(): Promise<Array<string>>
 	
+	public ready(): void {}
+	
 	protected abstract getDeviceId(): Promise<string>
 	
 	protected abstract makeCsiAuthKeyPrefix(): string
+	
+	public isFullScreenAvailable(): boolean {
+		return screen.supportsFullScreen
+	}
+	
+	public isFullScreenCurrent(): boolean {
+		return screen.fullScreen()
+	}
+	
+	public enterFullScreen() {
+		screen.requestFullScreen()
+	}
+	
+	public exitFullScreen() {
+		screen.exitFullScreen()
+	}
 }
