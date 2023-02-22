@@ -96,15 +96,15 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 	private player(resolve: (a: CpdAccount) => void, reject) {
 		this.ysdk.getPlayer({signed: true})
 			.then(player => {
-				const element = document.getElementById('app-user-id')
-				if (element) element.innerText = `YA${this.userId}`
-				
 				this.authorized = player.getMode() !== 'lite'
 				this.userId = player.getUniqueID()
 				
 				if (!this.authorized) {
 					this.userId = 'GUEST-' + this.userId
 				}
+				
+				const element = document.getElementById('app-user-id')
+				if (element) element.innerText = `YA${this.userId}`
 				
 				resolve(new CpdAccount(
 					this.makeCsiAuthKeyPrefix() + this.userId,
