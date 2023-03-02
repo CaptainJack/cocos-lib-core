@@ -131,14 +131,41 @@ export namespace _array {
 		return result
 	}
 	
-	export function remove<T>(collection: Array<T>, element: T): boolean {
-		const i = collection.indexOf(element)
+	export function remove<T>(collection: Array<T>, element: T | ((e: T) => boolean)): boolean {
+		let i:number = -1
+		if (isFunction(element)) {
+			for (let q = 0; q < collection.length; q++){
+				if (element(collection[q])) {
+					i = q
+					break
+				}
+			}
+		}
+		else {
+			i = collection.indexOf(element)
+		}
+		
 		if (i === -1) return false
 		collection.splice(i, 1)
 		return true
 	}
 	
-	export function removeAll<T>(collection: Array<T>, element: T): boolean {
+	export function removeAll<T>(collection: Array<T>, element: T | ((e: T) => boolean)): boolean {
+		if (isFunction(element)) {
+			let i:Array<number> = []
+			for (let q = 0; q < collection.length; q++){
+				if (element(collection[q])) {
+					i.push(q)
+				}
+			}
+			if (i.length === 0) return false
+			do {
+				collection.splice(i.pop(), 1)
+			}
+			while (i.length > 0)
+			return true
+		}
+		
 		let i = collection.indexOf(element)
 		if (i === -1) return false
 		do {

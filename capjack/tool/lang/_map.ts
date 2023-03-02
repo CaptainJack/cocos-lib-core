@@ -1,8 +1,15 @@
+import {isNullable} from './_utils'
+
 export namespace _map {
 	export function putAll<K, V>(target: Map<K, V>, source: Map<K, V>) {
 		for (const [k, v] of source) {
 			target.set(k, v)
 		}
+	}
+	
+	export function getOrDefault<K, V>(map: Map<K, V>, key: K, def: V): V {
+		const v = map.get(key)
+		return isNullable(v) ? def : v
 	}
 	
 	export function joinToString(map: Map<any, any>, separator: string = ', '): string {
