@@ -234,12 +234,10 @@ export abstract class AbstractBiserReader implements BiserReader {
 		if (size == 0) return EMPTY_ARRAY
 		if (size < 0) throw new BiserReadNegativeSizeException(size)
 		
-		const bytes = this.readByteArrayWithSize(size * 8)
-		const buffer = new Float64Array(bytes.buffer, 0)
 		const array = new Array(size)
 		
 		for (let i = 0; i < size; i++) {
-			array[i] = buffer[i]
+			array[i] = double.fromBytes(this.readByteArrayWithSize(8))
 		}
 		
 		return array
