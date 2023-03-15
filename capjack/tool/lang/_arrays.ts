@@ -37,6 +37,10 @@ export namespace _array {
 		return -1
 	}
 	
+	export function none<T>(collection: ArrayLike<T>, predicate: T | ((element: T) => boolean)): boolean {
+		return !any(collection, predicate)
+	}
+	
 	export function any<T>(collection: ArrayLike<T>, predicate: T | ((element: T) => boolean)): boolean {
 		if (isFunction(predicate)) {
 			return indexOf(collection, predicate) !== -1
