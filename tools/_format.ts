@@ -2,6 +2,7 @@ import {Long} from '../capjack/tool/lang/Long'
 import {isString} from '../capjack/tool/lang/_utils'
 import {_string} from '../capjack/tool/lang/_string'
 import {Label} from 'cc'
+import {_number} from '../capjack/tool/lang/_number'
 
 export enum TimePrecision {
 	HOUR,
@@ -87,8 +88,20 @@ export namespace _format {
 			return word5
 		}
 		
-		const str: string = number.toString()
-		const last: number = parseInt(str.charAt(str.length - 1))
+		let last: number
+		if (_number.isDouble(number)) {
+			if (number > 1 && number < 2) {
+				last = 2
+			}
+			else {
+				const str: string = (number | 0).toString()
+				last = parseInt(str.charAt(str.length - 1))
+			}
+		}
+		else {
+			const str: string = number.toString()
+			last = parseInt(str.charAt(str.length - 1))
+		}
 		if (last == 1) {
 			return word1
 		}

@@ -1,4 +1,4 @@
-export const INT_MAX_VALUE = 0x7fffffff;
+export const INT_MAX_VALUE = 0x7fffffff
 
 export namespace _number {
 	export function coerceIn(value: number, min: number, max: number): number {
@@ -13,5 +13,13 @@ export namespace _number {
 	
 	export function coerceAtMost(value: number, max: number): number {
 		return value > max ? max : value
+	}
+	
+	export function isInt(value: number) {
+		return (value | 0) === value
+	}
+	
+	export function isDouble(value: number) {
+		return !isInt(value)
 	}
 }
