@@ -11,7 +11,19 @@ export enum TimePrecision {
 }
 
 export namespace _format {
-	
+	export function date(date: Date, format: string):string {
+		let r = format
+		if (_string.contains(r, 'd')) {
+			r = r.replace('d', _string.padStart(date.getDate().toString(), 2, '0'))
+		}
+		if (_string.contains(r, 'm')) {
+			r = r.replace('m', _string.padStart((date.getMonth() +1).toString(), 2, '0'))
+		}
+		if (_string.contains(r, 'Y')) {
+			r = r.replace('Y', date.getFullYear().toString())
+		}
+		return r
+	}
 	
 	export function time(seconds: number, precision: TimePrecision): string {
 		const h = seconds / 3600 | 0
