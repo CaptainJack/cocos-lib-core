@@ -11,5 +11,8 @@ export interface Localization {
 	
 	formatIntegerNumber(value: number | Long): string
 	
+	formatIntegerM(value: number): string
+	
 	formatFractionNumber(value: number | Long, precision: number, fixed: boolean): string
+	
 }

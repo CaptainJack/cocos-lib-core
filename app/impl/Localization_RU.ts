@@ -36,7 +36,7 @@ export class Localization_RU extends AbstractLocalization {
 			case 'OK':
 				return 'OK'
 			case 'VK':
-				return _format.defineWordDeclinationRu(value, 'голос', 'голоса', 'голосов')
+				return 'гол.'
 			default:
 				return currency
 		}
@@ -56,6 +56,14 @@ export class Localization_RU extends AbstractLocalization {
 	
 	public formatIntegerNumber(value: number | Long): string {
 		return _format.formatIntegerNumber(value, this.config.thousandthSeparator)
+	}
+	
+	public formatIntegerM(value: number): string {
+		if (value >= 100000) {
+			value = value / 1000000
+			return this.formatFractionNumber(value, 3, false) + 'М'
+		}
+		return this.formatIntegerNumber(value)
 	}
 	
 	public formatFractionNumber(value: number | Long, precision: number, fixed: boolean): string {
