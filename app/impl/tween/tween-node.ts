@@ -35,8 +35,6 @@ export namespace tween_node {
 		return motions
 	}
 	
-	
-	
 	abstract class SingleNumberMotion implements NodeMotion {
 		protected target: Node
 		protected update: (k: number) => void = EMPTY_FUNCTION
@@ -289,21 +287,26 @@ export namespace tween_node {
 		}
 		
 		public start(target: Node) {
-			let component: UIOpacity | UIRenderer = target.getComponent(UIOpacity)
-			if (component) {
-				this.behavior = new Motion_Opacity_Behavior_UIOpacity(component)
+			if (!target.components) {
+				this.behavior = new Motion_Opacity_Behavior_Dummy()
 			}
 			else {
-				component = target.getComponent(UIRenderer)
+				let component: UIOpacity | UIRenderer = target.getComponent(UIOpacity)
 				if (component) {
-					this.behavior = new Motion_Opacity_Behavior_UIRenderer(component)
+					this.behavior = new Motion_Opacity_Behavior_UIOpacity(component)
 				}
 				else {
-					throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
+					component = target.getComponent(UIRenderer)
+					if (component) {
+						this.behavior = new Motion_Opacity_Behavior_UIRenderer(component)
+					}
+					else {
+						throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
+					}
 				}
-			}
-			if (this.active) {
-				target.active = true
+				if (this.active) {
+					target.active = true
+				}
 			}
 			super.start(target)
 		}
@@ -340,6 +343,16 @@ export namespace tween_node {
 		set(value: number)
 		
 		destroy()
+	}
+	
+	class Motion_Opacity_Behavior_Dummy implements Motion_Opacity_Behavior {
+		public defineFrom(): number {
+			return 0
+		}
+		
+		public destroy() {}
+		
+		public set(value: number) {}
 	}
 	
 	abstract class Motion_Opacity_Behavior_Component<C extends Component> implements Motion_Opacity_Behavior {
