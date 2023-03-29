@@ -1,5 +1,6 @@
 import {isFunction} from './_utils'
 import {NoSuchElementException} from './exceptions/NoSuchElementException'
+import {Class} from './_types'
 
 export const EMPTY_ARRAY = []
 
@@ -277,5 +278,9 @@ export namespace _array {
 		const array = new Array<number>(size)
 		array.fill(0)
 		return array
+	}
+	
+	export function filterIsInstance<T, R extends T>(collection: Array<T>, type: Class<R>): Array<R> {
+		return collection.filter(e => e instanceof type) as Array<R>
 	}
 }
