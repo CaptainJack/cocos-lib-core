@@ -135,9 +135,12 @@ export class AudioImpl extends AbstractVolumeable implements Audio, RealSoundOwn
 		if (this._nodes) {
 			this._nodes.add(source.node)
 			source.destroy()
+			
 		}
 		else {
-			source.node.destroy()
+			if(source.node) {
+				source.node.destroy()
+			}
 		}
 	}
 }
