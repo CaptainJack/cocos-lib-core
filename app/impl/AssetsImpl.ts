@@ -1,7 +1,7 @@
 // noinspection DuplicatedCode
 
 import {Assets} from '../Assets'
-import {Asset, assetManager, AssetManager, ImageAsset, Sprite, SpriteFrame, Texture2D} from 'cc'
+import {Asset, assetManager, AssetManager, ImageAsset, Sprite, SpriteFrame} from 'cc'
 import {Class} from '../../capjack/tool/lang/_types'
 import {LoadingProcess} from '../../loading/LoadingProcess'
 import {isNullable, isString} from '../../capjack/tool/lang/_utils'
@@ -133,6 +133,7 @@ export class AssetsImpl implements Assets {
 			if (!bundle) return null
 		}
 		
+		// @ts-ignore
 		return bundle.get(path, type)
 	}
 	
@@ -162,10 +163,7 @@ class OutsideImageLoading extends AbstractLoadingProcess<SpriteFrame> {
 			this.doComplete(null)
 		}
 		else {
-			const texture = new Texture2D()
-			const frame = new SpriteFrame()
-			texture.image = asset
-			frame.texture = texture
+			const frame = SpriteFrame.createWithImage(asset)
 			if (this.target) {
 				this.target.spriteFrame = frame
 			}
