@@ -164,7 +164,7 @@ class OutsideImageLoading extends AbstractLoadingProcess<SpriteFrame> {
 		}
 		else {
 			const frame = SpriteFrame.createWithImage(asset)
-			if (this.target) {
+			if (this.target && this.target.isValid) {
 				this.target.spriteFrame = frame
 			}
 			this.doComplete(frame)

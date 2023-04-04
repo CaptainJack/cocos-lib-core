@@ -136,10 +136,10 @@ export namespace _string {
 	
 	export function endsWith(value: string, suffix: string | Array<string>): boolean {
 		if (isString(suffix)) {
-			return value.indexOf(suffix) === value.length - suffix.length
+			return value.lastIndexOf(suffix) === value.length - suffix.length
 		}
 		for (const s of suffix) {
-			if (value.indexOf(s) === value.length - s.length) return true
+			if (value.lastIndexOf(s) === value.length - s.length) return true
 		}
 		return false
 	}
