@@ -109,12 +109,25 @@ export class AssetsImpl implements Assets {
 		return new QueuedBundleLoading(name, dependencies, this.errorHandler)
 	}
 	
-	public loadExternalImage(path: string, target?: Sprite): LoadingProcess<SpriteFrame> {
+	public loadExternalImage(path: string, target?: Sprite): Promise<SpriteFrame> {
 		return this.loadOutsideImage(this.remoteUrl + path, target)
 	}
 	
-	public loadOutsideImage(url: string, target?: Sprite): LoadingProcess<SpriteFrame> {
-		return new OutsideImageLoading(url, target)
+	public loadOutsideImage(url: string, target?: Sprite): Promise<SpriteFrame> {
+		return new Promise((resolve, reject) => {
+			assetManager.loadRemote<ImageAsset>(url, {ext: '.png'}, (error, asset) => {
+				if (error) {
+					reject(error)
+				}
+				else {
+					const frame = SpriteFrame.createWithImage(asset)
+					if (target && target.isValid) {
+						target.spriteFrame = frame
+					}
+					resolve(frame)
+				}
+			})
+		})
 	}
 	
 	public unloadBundle(name: string) {
@@ -148,29 +161,6 @@ export class AssetsImpl implements Assets {
 	}
 }
 
-class OutsideImageLoading extends AbstractLoadingProcess<SpriteFrame> {
-	constructor(url: string, private target?: Sprite) {
-		super()
-		assetManager.loadRemote<ImageAsset>(url, {ext: '.png'}, (e, a) => this.onCompleteRemote(e, a))
-	}
-	
-	protected calcProgress(): number {
-		return 0
-	}
-	
-	private onCompleteRemote(error: Error, asset: ImageAsset) {
-		if (error) {
-			this.doComplete(null)
-		}
-		else {
-			const frame = SpriteFrame.createWithImage(asset)
-			if (this.target && this.target.isValid) {
-				this.target.spriteFrame = frame
-			}
-			this.doComplete(frame)
-		}
-	}
-}
 
 class QueuedBundleLoading extends CompositeLoadingProcess<AssetManager.Bundle> {
 	constructor(name: string, private dependencies: Array<string>, private errorHandler: (error: Error) => void) {

@@ -43,7 +43,7 @@ export class ApplicationImpl implements Application {
 		this.audio = new AudioImpl(scene.node, this.tweener)
 		this.bundler = new BundlerImpl({}, this.assistant, e => this.handleError(e))
 		this.assets = new AssetsImpl(
-			config.resourcesExternal ? config.resourcesExternal : _string.endWith(config.resources, '/') + 'external',
+			config.externalUrl,
 			bundleDependencies,
 			e => this.handleError(e))
 		

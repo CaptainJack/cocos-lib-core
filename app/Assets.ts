@@ -13,7 +13,7 @@ export interface Assets {
 	
 	unloadBundle(name: string)
 	
-	loadExternalImage(path: string, target?: Sprite): LoadingProcess<SpriteFrame>
+	loadExternalImage(path: string, target?: Sprite): Promise<SpriteFrame>
 	
-	loadOutsideImage(url: string, target?: Sprite): LoadingProcess<SpriteFrame>
+	loadOutsideImage(url: string, target?: Sprite): Promise<SpriteFrame>
 }
