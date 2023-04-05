@@ -15,7 +15,6 @@ import {Bundler} from '../Bundler'
 import {BundlerImpl} from './BundlerImpl'
 import {Assets} from '../Assets'
 import {AssetsImpl} from './AssetsImpl'
-import {_string} from '../../capjack/tool/lang/_string'
 
 export class ApplicationImpl implements Application {
 	public readonly local: boolean
