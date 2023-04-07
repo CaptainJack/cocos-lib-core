@@ -1,4 +1,4 @@
-import {_decorator, assetManager, Material, math, Sprite, SpriteFrame, UITransform, Vec2} from 'cc'
+import {_decorator, assetManager, Material, Sprite, UITransform, Vec2} from 'cc'
 
 @_decorator.ccclass('RoundRectSprite')
 @_decorator.menu('lib/render/RoundRectSprite')
@@ -33,8 +33,8 @@ export class RoundRectSprite extends Sprite {
 		const size = this.node.getComponent(UITransform).contentSize
 		
 		const material = this.getMaterial(0)
-		material.setProperty('size', new Vec2(size.width, size.height));
-		material.setProperty('radius', this._radius);
+		material.setProperty('size', new Vec2(size.width, size.height))
+		material.setProperty('radius', this._radius)
 	}
 }
 

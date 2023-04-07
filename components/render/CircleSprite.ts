@@ -1,4 +1,4 @@
-import {_decorator, assetManager, Material, Sprite, SpriteFrame} from 'cc'
+import {_decorator, assetManager, Material, Sprite} from 'cc'
 
 @_decorator.ccclass('CircleSprite')
 @_decorator.menu('lib/render/CircleSprite')
