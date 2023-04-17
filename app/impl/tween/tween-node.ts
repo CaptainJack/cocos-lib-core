@@ -373,7 +373,9 @@ export namespace tween_node {
 		}
 		
 		public set(value: number) {
-			return this.component.opacity = value
+			if (this.component.isValid) {
+				this.component.opacity = value
+			}
 		}
 	}
 	
@@ -383,9 +385,11 @@ export namespace tween_node {
 		}
 		
 		public set(value: number) {
-			const color = this.component.color.clone()
-			color.a = value
-			return this.component.color = color
+			if (this.component.isValid) {
+				const color = this.component.color.clone()
+				color.a = value
+				this.component.color = color
+			}
 		}
 	}
 }
