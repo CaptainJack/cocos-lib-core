@@ -22,4 +22,11 @@ export namespace _number {
 	export function isDouble(value: number) {
 		return !isInt(value)
 	}
+	
+	export function sequence(start: number, stop: number, step: number = 1): Array<number> {
+		return Array.from(
+			{length: (stop - start) / step + 1},
+			(value, index) => start + index * step
+		)
+	}
 }
