@@ -41,6 +41,31 @@ export class FadeSoundAdjuster implements SoundAdjuster {
 	}
 }
 
+export class FadeStartSoundAdjuster implements SoundAdjuster {
+	constructor(private sound: RealSound, private duration: number) {
+	}
+	
+	public handlePlay(): void {
+		this.sound.smoothVolume(this.duration, 0, 1)
+	}
+	
+	public handleStart(): void {
+	}
+	
+	public handlePause(): boolean {
+		return false
+	}
+	
+	public handleStop(): boolean {
+		return false
+	}
+	
+	public handleEnd(): void {
+		this.sound = null
+		this.duration = null
+	}
+}
+
 export class FadeStopSoundAdjuster implements SoundAdjuster {
 	constructor(private sound: RealSound, private duration: number) {
 	}

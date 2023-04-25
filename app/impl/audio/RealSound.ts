@@ -1,6 +1,6 @@
 import {AudioClip, AudioSource} from 'cc'
 import {AbstractVolumeable} from './AbstractVolumeable'
-import {FadeSoundAdjuster, FadeStopSoundAdjuster, JumpsSoundAdjuster, SoundAdjuster} from './SoundAdjuster'
+import {FadeSoundAdjuster, FadeStartSoundAdjuster, FadeStopSoundAdjuster, JumpsSoundAdjuster, SoundAdjuster} from './SoundAdjuster'
 import {RealSoundOwner} from './RealSoundOwner'
 import {Sound, SoundSettings} from '../../Audio'
 import {Tweener} from '../../Tweener'
@@ -31,8 +31,13 @@ export class RealSound extends AbstractVolumeable implements Sound {
 			if (settings.smooth) {
 				this.addAdjuster(new FadeSoundAdjuster(this, settings.smooth))
 			}
-			else if (settings.smoothStop) {
-				this.addAdjuster(new FadeStopSoundAdjuster(this, settings.smoothStop))
+			else {
+				if (settings.smoothStart) {
+					this.addAdjuster(new FadeStartSoundAdjuster(this, settings.smoothStop))
+				}
+				if (settings.smoothStop) {
+					this.addAdjuster(new FadeStopSoundAdjuster(this, settings.smoothStop))
+				}
 			}
 			if (settings.jumps) {
 				this.source.loop = true
