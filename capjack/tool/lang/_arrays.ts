@@ -29,6 +29,20 @@ export namespace _array {
 		return collection.indexOf(element) !== -1
 	}
 	
+	export function containsAny<T>(collection: ArrayLike<T>, ...elements: Array<T>): boolean {
+		const el = elements.length
+		for (let ci = 0, cl = collection.length; ci < cl; ci++) {
+			const c = collection[ci]
+			for (let ei = 0; ei < el; ei++) {
+				if (c == elements[ei]) {
+					return true
+				}
+			}
+		}
+		
+		return false
+	}
+	
 	export function indexOf<T>(collection: ArrayLike<T>, predicate: (element: T) => boolean): number {
 		for (let i = 0, l = collection.length; i < l; i++) {
 			if (predicate(collection[i])) {
@@ -277,6 +291,14 @@ export namespace _array {
 	export function newIntArray(size: number): Array<number> {
 		const array = new Array<number>(size)
 		array.fill(0)
+		return array
+	}
+	
+	export function newWith<T>(size: number, element: (i: number) => T): Array<T> {
+		const array = new Array<T>(size)
+		for (let i = 0; i < size; i++) {
+			array[i] = element(i)
+		}
 		return array
 	}
 	

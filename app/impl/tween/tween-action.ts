@@ -28,6 +28,30 @@ export namespace tween_action {
 		}
 	}
 	
+	export class PauseAction implements Action {
+		private resumed: boolean = false
+		
+		constructor(private fn: (resume: () => void) => void) {}
+		
+		public update(time): boolean {
+			if (this.fn) {
+				this.fn(() => this.resume())
+				this.fn = null
+			}
+			return this.resumed
+		}
+		
+		public start(): void {}
+		
+		public clone(): PauseAction {
+			return new PauseAction(this.fn)
+		}
+		
+		private resume():void {
+			this.resumed = true
+		}
+	}
+	
 	export class DelayAction implements Action {
 		constructor(private duration: number, private fn?: () => void) {
 		}

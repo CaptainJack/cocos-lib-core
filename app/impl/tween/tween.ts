@@ -205,6 +205,10 @@ export namespace tween {
 			return this.add(new _ta.CallAction(fn))
 		}
 		
+		public pause(fn: (resume: () => void) => void): this {
+			return this.add(new _ta.PauseAction(fn))
+		}
+		
 		public delay(duration: number, fn?: () => void): this {
 			require(duration >= 0)
 			return this.add(new _ta.DelayAction(duration, fn))
@@ -455,6 +459,10 @@ export namespace tween {
 	
 	class DummyTweenSequence implements TweenSequence {
 		public call(fn: () => void): this {
+			return this
+		}
+		
+		public pause(fn: (resume: () => void) => void): this {
 			return this
 		}
 		

@@ -33,6 +33,8 @@ export interface TweenActions {
 	
 	call(fn: () => void): this
 	
+	pause(fn: (resume: () => void) => void): this
+	
 	repeatCall(times: number, delay: number, fn: (iteration: number) => void): this
 	
 	repeatSequence(times: number, delay: number, builder: (sequence: TweenSequence) => void): this
