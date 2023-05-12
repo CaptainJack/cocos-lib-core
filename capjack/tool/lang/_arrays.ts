@@ -151,9 +151,9 @@ export namespace _array {
 	}
 	
 	export function remove<T>(collection: Array<T>, element: T | ((e: T) => boolean)): boolean {
-		let i:number = -1
+		let i: number = -1
 		if (isFunction(element)) {
-			for (let q = 0; q < collection.length; q++){
+			for (let q = 0; q < collection.length; q++) {
 				if (element(collection[q])) {
 					i = q
 					break
@@ -171,8 +171,8 @@ export namespace _array {
 	
 	export function removeAll<T>(collection: Array<T>, element: T | ((e: T) => boolean)): boolean {
 		if (isFunction(element)) {
-			let i:Array<number> = []
-			for (let q = 0; q < collection.length; q++){
+			let i: Array<number> = []
+			for (let q = 0; q < collection.length; q++) {
 				if (element(collection[q])) {
 					i.push(q)
 				}
@@ -208,7 +208,6 @@ export namespace _array {
 		
 		return collection
 	}
-	
 	
 	export function addDistinct<T>(collection: Array<T>, value: T) {
 		if (!contains(collection, value)) collection.push(value)
@@ -305,4 +304,23 @@ export namespace _array {
 	export function filterIsInstance<T, R extends T>(collection: Array<T>, type: Class<R>): Array<R> {
 		return collection.filter(e => e instanceof type) as Array<R>
 	}
+}
+
+declare global {
+	interface Array<T> {
+		distinct(): Array<T>
+		
+		onEach(code: (element: T, index: number) => void): Array<T>
+	}
+}
+
+Array.prototype.distinct = function () {
+	return Array.from(new Set(this))
+}
+
+Array.prototype.onEach = function (code: (element: any, index: number) => void) {
+	for (let i = 0; i < this.length; i++){
+		code(this[i], i)
+	}
+	return this
 }

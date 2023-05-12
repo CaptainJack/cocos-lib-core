@@ -29,9 +29,9 @@ export namespace _random {
 	}
 	
 	
-	export function element<T>(collection: ArrayLike<T>): T | null {
+	export function element<T>(collection: ArrayLike<T>, def:T = null): T | null {
 		let l = collection.length
-		if (l == 0) return null
+		if (l == 0) return def
 		if (l == 1) return collection[0]
 		return collection[int(l)]
 	}
