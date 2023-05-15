@@ -3,6 +3,7 @@ import {CpdAccount} from '../CpdAccount'
 import {Exception} from '../../capjack/tool/lang/exceptions/Exception'
 import {extractError} from '../../capjack/tool/lang/_errors'
 import {LocalStorage} from '../../app/LocalStorage'
+import {restartApp} from '../../../../main/lib-main/_tools'
 
 export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 	private userId: string
@@ -114,6 +115,9 @@ export class YandexBrowserAdapter extends AbstractBrowserAdapter {
 				))
 				
 			})
-			.catch(e => reject(new Exception('Failed to YANDEX getPlayer', extractError(e))))
+			.catch(e => {
+				//reject(new Exception('Failed to YANDEX getPlayer', extractError(e)))
+				restartApp()
+			})
 	}
 }
