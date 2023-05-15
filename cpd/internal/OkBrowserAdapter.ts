@@ -75,7 +75,8 @@ export class OkBrowserAdapter extends AbstractBrowserAdapter {
 		return new Promise((resolve, reject) => {
 			FAPI.Client.call({'method': 'friends.getAppUsers'}, (status, data, error) => {
 				if (error) {
-					reject(new Exception('Failed call friends.getAppUsers', extractError(error)))
+					// reject(new Exception('Failed call friends.getAppUsers', extractError(error)))
+					resolve([])
 				}
 				else {
 					resolve(data['uids'].map(v => v.toString()))
