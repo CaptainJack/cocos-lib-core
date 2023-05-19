@@ -1,8 +1,19 @@
 import {isFunction} from './_utils'
 import {NoSuchElementException} from './exceptions/NoSuchElementException'
 import {Class} from './_types'
+import {UnsupportedOperationException} from './exceptions/UnsupportedOperationException'
 
 export const EMPTY_ARRAY = []
+
+EMPTY_ARRAY.push =
+EMPTY_ARRAY.pop =
+EMPTY_ARRAY.shift =
+EMPTY_ARRAY.sort =
+EMPTY_ARRAY.splice =
+EMPTY_ARRAY.unshift = function () {
+	throw new UnsupportedOperationException()
+}
+
 
 export namespace _array {
 	export const ORDER_NUMBER_NATURAL = (a: number, b: number) => a === b ? 0 : (a > b ? 1 : -1)
