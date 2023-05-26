@@ -155,8 +155,22 @@ export class Long {
 		return this.compare(other) < 0;
 	}
 	
+	lessInt(other: number): boolean {
+		if (this.isHigh()) {
+			return this.less(Long.fromInt(other))
+		}
+		return this.low < other
+	}
+	
 	lessOrEqual(other: Long): boolean {
 		return this.compare(other) <= 0;
+	}
+	
+	lessOrEqualInt(other: number): boolean {
+		if (this.isHigh()) {
+			return this.lessOrEqual(Long.fromInt(other))
+		}
+		return this.low <= other
 	}
 	
 	great(other: Long): boolean {
