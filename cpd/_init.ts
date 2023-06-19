@@ -8,34 +8,41 @@ import {extractError} from '../capjack/tool/lang/_errors'
 import {OkBrowserAdapter} from './internal/OkBrowserAdapter'
 import {VkBrowserAdapter} from './internal/VkBrowserAdapter'
 import {YandexBrowserAdapter} from './internal/YandexBrowserAdapter'
+import {AndroidNativeAdapter} from "db://assets/core/lib-core/cpd/internal/AndroidNativeAdapter";
 
 export function initCpd(storage: LocalStorage): Promise<CpdAdapter> {
-	return sys.isNative ? factoryNative() : factoryBrowser(storage)
-}
-
-function factoryNative(): Promise<CpdAdapter> {
-	return Promise.reject(new UnsupportedOperationException())
+	return sys.isNative ? factoryNative(storage) : factoryBrowser(storage)
 }
 
 function factoryBrowser(storage: LocalStorage): Promise<CpdAdapter> {
 	const urp = extractUrlRequestParameters()
-	
+
 	// OK
 	if (!!urp['api_server'] && !!urp['apiconnection'] && !!urp['logged_user_id']) {
 		return factoryBrowserOk(storage, urp)
 	}
-	
+
 	// VK
 	if (!!urp['api_url'] && !!urp['api_id'] && !!urp['viewer_id']) {
 		return factoryBrowserVk(storage, urp)
 	}
-	
+
 	// YANDEX
 	if (window.location.hash.indexOf('yandex') > 0) {
 		return factoryBrowserYandex(storage)
 	}
-	
+
 	return factoryBrowserGuest(storage)
+}
+
+function factoryNative(storage: LocalStorage): Promise<CpdAdapter> {
+	// noinspection JSUnreachableSwitchBranches
+	switch (sys.os) {
+		case sys.OS.ANDROID:
+			return Promise.resolve(new AndroidNativeAdapter(storage))
+	}
+
+	return Promise.reject(new UnsupportedOperationException())
 }
 
 function factoryBrowserGuest(storage: LocalStorage): Promise<CpdAdapter> {
