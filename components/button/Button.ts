@@ -1,4 +1,4 @@
-import {_decorator, AudioClip, EventKeyboard, EventTouch, Input, input, NodeEventType} from 'cc'
+import {_decorator, AudioClip, EventKeyboard, EventTouch, Input, input, NodeEventType, UITransform} from 'cc'
 import {Cancelable} from '../../capjack/tool/utils/Cancelable'
 import {NormalizedComponent} from '../../../../main/lib-main/components/NormalizedComponent'
 import {_string} from '../../capjack/tool/lang/_string'
@@ -161,6 +161,10 @@ export class Button extends NormalizedComponent {
 		this.removeAllStateHandlers()
 	}
 	
+	private isInteractiveAndEnabled() {
+		return this._interactive && this.enabledInHierarchy
+	}
+	
 	protected executePress() {
 		if (this._soundPress) app.audio.play(this._soundPress)
 		
@@ -184,7 +188,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private defineState() {
-		if (this._interactive) {
+		if (this.isInteractiveAndEnabled()) {
 			if (this._pressed) return ButtonState.PRESSED
 			if (this._hovered) return ButtonState.HOVERED
 			return ButtonState.NORMAL
@@ -193,7 +197,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onKeyDown(event: EventKeyboard) {
-		if (!this._interactive) return
+		if (!this.isInteractiveAndEnabled()) return
 		
 		if (event.keyCode == this._keyCode) {
 			event.propagationStopped = true
@@ -205,7 +209,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onKeyUp(event: EventKeyboard) {
-		if (!this._interactive) return
+		if (!this.isInteractiveAndEnabled()) return
 		
 		if (this._pressed && event.keyCode == this._keyCode) {
 			event.propagationStopped = true
@@ -217,9 +221,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onTouchStart(event: EventTouch) {
-		if (!this._interactive) {
-			return
-		}
+		if (!this.isInteractiveAndEnabled()) return
 		
 		event.propagationStopped = true
 		
@@ -230,9 +232,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onTouchMove(event: EventTouch) {
-		if (!this._interactive) {
-			return
-		}
+		if (!this.isInteractiveAndEnabled()) return
 		
 		const touch = event.touch
 		if (!touch) {
@@ -252,14 +252,12 @@ export class Button extends NormalizedComponent {
 			return
 		}
 		
-		this._pressed = this.node._uiProps.uiTransformComp!.hitTest(touch.getLocation())
+		this._pressed = this.node._uiProps.uiTransformComp!.isHit(touch.getUILocation())
 		this.updateState()
 	}
 	
 	private onTouchEnd(event: EventTouch) {
-		if (!this._interactive) {
-			return
-		}
+		if (!this.isInteractiveAndEnabled()) return
 		
 		if (this._pressed && !this._moving) {
 			event.propagationStopped = true
@@ -280,7 +278,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onTouchCancel() {
-		if (!this._interactive) {
+		if (!this.isInteractiveAndEnabled()) {
 			return
 		}
 		this._pressed = false
@@ -288,7 +286,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onMouseEnter() {
-		if (!this._interactive) {
+		if (!this.isInteractiveAndEnabled()) {
 			return
 		}
 		this._hovered = true
@@ -296,7 +294,7 @@ export class Button extends NormalizedComponent {
 	}
 	
 	private onMouseLeave() {
-		if (!this._interactive) {
+		if (!this.isInteractiveAndEnabled()) {
 			return
 		}
 		this._hovered = false

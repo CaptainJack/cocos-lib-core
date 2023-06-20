@@ -17,7 +17,7 @@ CCEffect %{
       properties:
         alphaThreshold: { value: 0.5 }
         blur: { value: 1 }
-        radius: { value: 10.0 }
+        radius: { value: 100.0 }
         size: { value: [100, 100]}
 }%
 

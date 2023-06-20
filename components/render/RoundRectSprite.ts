@@ -15,24 +15,31 @@ export class RoundRectSprite extends Sprite {
 	
 	public set radius(value: number) {
 		this._radius = value
-		this.updateMaterialProperties()
+		this.updateMaterial()
 	}
 	
 	public onLoad() {
-		this.customMaterial = assetManager.assets.get('e16f795b-e7a8-4dd6-a07f-cb80b486bd91') as Material
+		super.onLoad()
+		this.customMaterial = assetManager.assets.find(a => a.name === 'RoundRectSprite' && a instanceof Material) as Material
 	}
 	
 	public markForUpdateRenderData(enable?: boolean) {
-		const frame = this.spriteFrame
-		if (frame) frame.packable = false
 		this.updateMaterialProperties()
-		super.markForUpdateRenderData()
+		super.markForUpdateRenderData(enable)
+	}
+	
+	protected updateMaterial() {
+		super.updateMaterial()
+		this.updateMaterialProperties()
 	}
 	
 	private updateMaterialProperties() {
+		const frame = this.spriteFrame
 		const size = this.node.getComponent(UITransform).contentSize
+		const material = this.getMaterialInstance(0)
 		
-		const material = this.getMaterial(0)
+		if (frame) frame.packable = false
+		
 		material.setProperty('size', new Vec2(size.width, size.height))
 		material.setProperty('radius', this._radius)
 	}
