@@ -8,13 +8,7 @@ declare namespace devtodev {
 	
 	function getCurrentLevel(): number
 	
-	function levelUp(
-		level: number,
-		balance?: Record<string, number>,
-		spent?: Record<string, number>,
-		earned?: Record<string, number>,
-		bought?: Record<string, number>
-	): void
+	function levelUp(level: number, balance?: Record<string, number>): void
 	
 	function currentBalance(balance: Record<string, number>)
 	

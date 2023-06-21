@@ -2,6 +2,7 @@ import {sys} from 'cc'
 import {BrowserAnalyticsBroker} from './internal/BrowserAnalyticsBroker'
 import {DummyAnalyticsBroker} from './internal/DummyAnalyticsBroker'
 import {InternalAnalyticsBroker} from './internal/InternalAnalyticsBroker'
+import {AndroidAnalyticsBroker} from './internal/AndroidAnalyticsBroker'
 
 export function initAnb(config: AnalyticsBrokerConfig): Promise<void> {
     if (window['anb']) {
@@ -15,7 +16,7 @@ export function initAnb(config: AnalyticsBrokerConfig): Promise<void> {
             broker = new DummyAnalyticsBroker()
         }
         if (sys.os == sys.OS.ANDROID) {
-            broker = new DummyAnalyticsBroker()
+            broker = new AndroidAnalyticsBroker()
         }
     } else {
         if (window['devtodev'] && window['devtodevAppId'] != '{DTD}') {

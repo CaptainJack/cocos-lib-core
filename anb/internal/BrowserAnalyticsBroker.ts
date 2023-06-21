@@ -16,13 +16,8 @@ export class BrowserAnalyticsBroker extends BaseAnalyticsBroker {
 		devtodev.tutorial(step)
 	}
 	
-	public levelUp(level: number, balance?: Record<string, number | Long>, spent?: Record<string, number | Long>, earned?: Record<string, number | Long>, bought?: Record<string, number | Long>) {
-		devtodev.levelUp(level,
-			this.normalizeBalance(balance),
-			this.normalizeBalance(spent),
-			this.normalizeBalance(earned),
-			this.normalizeBalance(bought)
-		)
+	public levelUp(level: number, balance?: Record<string, number | Long>) {
+		devtodev.levelUp(level, this.normalizeBalance(balance))
 	}
 	
 	public profile(profile: {name?: string; email?: string; phone?: string; photo?: string; gender?: AnalyticsBrokerGender; age?: number}) {
@@ -53,4 +48,3 @@ export class BrowserAnalyticsBroker extends BaseAnalyticsBroker {
 		return r
 	}
 }
-

@@ -8,7 +8,7 @@ export abstract class BaseAnalyticsBroker implements InternalAnalyticsBroker {
 	
 	public abstract init(config: AnalyticsBrokerConfig): Promise<void>
 	
-	public abstract levelUp(level: number, balance?: Record<string, number | Long>, spent?: Record<string, number | Long>, earned?: Record<string, number | Long>, bought?: Record<string, number | Long>)
+	public abstract levelUp(level: number, balance?: Record<string, number | Long>)
 	
 	public abstract tutorial(step: number)
 	

@@ -6,6 +6,11 @@ export const EMPTY_FUNCTION = () => {}
 export const EMPTY_FUNCTION_TRUE = () => true
 export const EMPTY_FUNCTION_FALSE = () => false
 
+export function isBoolean(value: any): value is boolean {
+	const type = typeof value
+	return type === 'boolean' || (type === 'object' && value != null && !Array.isArray(value) && toString.call(value) == '[object Boolean]')
+}
+
 export function isString(value: any): value is string {
 	const type = typeof value
 	return type === 'string' || (type === 'object' && value != null && !Array.isArray(value) && toString.call(value) == '[object String]')
@@ -13,7 +18,7 @@ export function isString(value: any): value is string {
 
 export function isFunction(value: any): value is Function {
 	const type = typeof value
-	return type === 'function' || (type === 'object' && value != null && toString.call(value) == '[object Function]')
+	return type === 'function' || (type === 'object' && value != null && !Array.isArray(value) && toString.call(value) == '[object Function]')
 }
 
 export function isNumber(value: any): value is number {

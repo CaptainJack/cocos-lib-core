@@ -12,11 +12,11 @@ export namespace _map {
 		return isNullable(v) ? def : v
 	}
 	
-	export function joinToString(map: Map<any, any>, separator: string = ', '): string {
+	export function joinToString(map: Map<any, any>, entitySeparator: string = ', ', valueSeparator: string = ': '): string {
 		let r = []
 		for (const [k, v] of map) {
-			r.push(`${k}: ${v}`)
+			r.push(k + valueSeparator + v)
 		}
-		return r.join(separator)
+		return r.join(entitySeparator)
 	}
 }
