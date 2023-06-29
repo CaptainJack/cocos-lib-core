@@ -1,10 +1,6 @@
 import {AbstractNativeAdapter} from 'db://assets/core/lib-core/cpd/internal/AbstractNativeAdapter'
 import {CpdAccount} from 'db://assets/core/lib-core/cpd/CpdAccount'
-import {_random} from 'db://assets/core/lib-core/tools/_random'
-import {EMPTY_FUNCTION} from 'db://assets/core/lib-core/capjack/tool/lang/_utils'
 import {_native} from '../../tools/_native'
-import {Exception} from '../../capjack/tool/lang/exceptions/Exception'
-import {extractError} from '../../capjack/tool/lang/_errors'
 
 export class AndroidNativeAdapter extends AbstractNativeAdapter {
 	public getAppFriends(): Promise<Array<string>> {
@@ -21,6 +17,13 @@ export class AndroidNativeAdapter extends AbstractNativeAdapter {
 		id: string;
 		price: number
 	}>) => void, purchaseConsumer: (productId: string, orderId: string, receipt: string, successConsumer: () => void) => void): void {
+		
+		window['cpd_givePurchase'] = (productId: string, orderId: string, receipt: string) => {
+			purchaseConsumer(productId, orderId, receipt, () => {
+				_native.callJava('ru.capjack.cpd.Cpd.confirmPurchase(s)', orderId)
+			})
+		}
+		
 		_native.callJava('ru.capjack.cpd.Cpd.actualizePurchases()')
 		
 		receiver(null, [])
@@ -31,12 +34,18 @@ export class AndroidNativeAdapter extends AbstractNativeAdapter {
 		name: string;
 		price: number
 	}, onSuccess: (orderId: string, receipt: string, successConsumer: () => void) => void, onFail: (reason: string) => void): void {
-		if (app.debug) {
-			onSuccess(`TEST-${Date.now()}-${_random.intOfRange(0, 2000000000)}`, 'TEST', EMPTY_FUNCTION)
+		
+		window['cpd_successPurchase'] = (orderId: string, receipt: string) => {
+			onSuccess(orderId, receipt, () => {
+				_native.callJava('ru.capjack.cpd.Cpd.confirmPurchase(s)', orderId)
+			})
 		}
-		else {
-			onFail('NOT_AVAILABLE')
+		
+		window['cpd_failPurchase'] = (reason: string) => {
+			onFail(reason)
 		}
+		
+		_native.callJava('ru.capjack.cpd.Cpd.purchase(s)', product.id)
 	}
 	
 	protected getDeviceId(): Promise<string> {
