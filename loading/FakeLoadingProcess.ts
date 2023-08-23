@@ -6,7 +6,8 @@ export class FakeLoadingProcess implements LoadingProcess<void> {
 	
 	constructor() {}
 	
-	onComplete(handler: () => void) {
+	onComplete(handler: () => void): this {
 		app.assistant.execute(handler)
+		return this
 	}
 }

@@ -14,13 +14,14 @@ export abstract class AbstractLoadingProcess<R> implements LoadingProcess<R> {
 		return this.completed ? 1 : this.calcProgress()
 	}
 	
-	onComplete(handler: (result: R) => void) {
+	onComplete(handler: (result: R) => void): this {
 		if (this.completed) {
 			app.assistant.execute(() => handler(this.result))
 		}
 		else {
 			this.handlers.push(handler)
 		}
+		return this
 	}
 	
 	protected doComplete(result?:R) {
