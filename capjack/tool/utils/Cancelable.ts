@@ -79,3 +79,10 @@ class StoppableCancelable implements Cancelable {
 	}
 }
 
+export class DelegateCancelable implements Cancelable {
+	constructor(public target: Cancelable | null = null) {}
+	
+	public cancel(): void {
+		if (this.target) this.target.cancel()
+	}
+}
