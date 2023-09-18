@@ -20,6 +20,8 @@ export interface Sound extends Volumeable {
 	
 	pause()
 	
+	getCurrentTime():number
+	
 	play(from?: number)
 }
 

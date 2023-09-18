@@ -50,6 +50,12 @@ export class RealSound extends AbstractVolumeable implements Sound {
 		return 1000 * this.clip.getDuration()
 	}
 	
+	public getCurrentTime():number {
+		if (this.source) {
+			return this.source.currentTime * 1000
+		}
+	}
+	
 	public play(from?: number) {
 		if (this.source && (!this.played || from !== undefined)) {
 			this.played = true

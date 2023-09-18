@@ -23,6 +23,10 @@ export class DummySound implements Sound {
 	
 	public pause() {}
 	
+	public getCurrentTime():number {
+		return 0
+	}
+	
 	public play() {}
 	
 	public smoothVolume(duration: number, from: number, to?: number): Promise<void> {
