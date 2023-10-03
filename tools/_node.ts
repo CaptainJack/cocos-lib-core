@@ -20,6 +20,8 @@ declare module 'cc' {
 		
 		setOpacity(percent: number)
 		
+		setOpacityTry(percent: number)
+		
 		setScaleFully(percent: number)
 		
 		setWidth(value: number)
@@ -166,6 +168,25 @@ Node.prototype.setOpacity = function (percent: number) {
 		}
 		else {
 			throw new IllegalArgumentException('UIOpacity or UIRenderer component required')
+		}
+	}
+}
+
+Node.prototype.setOpacityTry = function (percent: number) {
+	require(percent >= 0 && percent <= 1)
+	
+	const opacity = 255 * percent
+	const opacityComponent: UIOpacity = this.getComponent(UIOpacity)
+	
+	if (opacityComponent) {
+		opacityComponent.opacity = opacity
+	}
+	else {
+		const renderableComponent = this.getComponent(UIRenderer)
+		if (renderableComponent) {
+			const color = renderableComponent.color.clone()
+			color.a = opacity
+			renderableComponent.color = color
 		}
 	}
 }
